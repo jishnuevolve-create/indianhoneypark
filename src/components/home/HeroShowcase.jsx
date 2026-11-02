@@ -1,4 +1,5 @@
 import { useRef } from 'react';
+import { withBase } from '../../utils/assetUrl';
 
 const MAX_TILT_DEGREES = 8;
 
@@ -97,8 +98,8 @@ function HeroShowcase({ slides, activeIndex, onSelect }) {
               const shouldLoad = index <= activeIndex + 1;
               // Light WebP copies sit next to each PNG (jar.webp = 900px, jar-600.webp = 600px).
               // Browsers use the WebP; the PNG is the fallback for very old browsers.
-              const webp900 = slide.image.replace(/\.png$/, '.webp');
-              const webp600 = slide.image.replace(/\.png$/, '-600.webp');
+              const webp900 = withBase(slide.image).replace(/\.png$/, '.webp');
+              const webp600 = withBase(slide.image).replace(/\.png$/, '-600.webp');
               return (
                 <picture key={slide.productSlug}>
                   {shouldLoad && (
@@ -109,7 +110,7 @@ function HeroShowcase({ slides, activeIndex, onSelect }) {
                     />
                   )}
                   <img
-                    src={shouldLoad ? slide.image : undefined}
+                    src={shouldLoad ? withBase(slide.image) : undefined}
                     alt={isActive ? `${slide.product.name} jar` : ''}
                     aria-hidden={!isActive}
                     width="900"

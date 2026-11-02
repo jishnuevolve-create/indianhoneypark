@@ -4,6 +4,7 @@ import { BrowserRouter } from 'react-router-dom';
 import App from './App';
 import { CartProvider } from './context/CartContext';
 import { ToastProvider } from './context/ToastContext';
+import { ROUTER_BASENAME } from './utils/assetUrl';
 // Self-hosted fonts: served from this website instead of Google, which loads faster.
 import '@fontsource-variable/dm-sans/opsz.css';
 import '@fontsource-variable/fraunces/opsz.css';
@@ -14,7 +15,8 @@ import './styles/globals.css';
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <BrowserRouter>
+    {/* basename lets page addresses work when the site lives in a sub-folder (GitHub Pages) */}
+    <BrowserRouter basename={ROUTER_BASENAME}>
       <ToastProvider>
         <CartProvider>
           <App />

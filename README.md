@@ -51,6 +51,14 @@ npm run format       # tidies the code formatting
 
 After you deploy, set `siteUrl` in `src/data/siteConfig.js` to your real domain.
 
+## GitHub Pages
+
+The site is also published at **https://jishnuevolve-create.github.io/indianhoneypark/**.
+
+- Every push to the `main` branch rebuilds and republishes it automatically (`.github/workflows/deploy-pages.yml`). Progress is visible in the repository's **Actions** tab.
+- One-time setting: repository **Settings → Pages → Build and deployment → Source: GitHub Actions**.
+- Because this address has a sub-folder (`/indianhoneypark/`), the workflow builds with `BASE_PATH=/indianhoneypark/`. Image paths in the code start with `/images/...` and are adjusted automatically by `src/utils/assetUrl.js`. Vercel and local development use `/` and need nothing extra.
+
 ---
 
 ## Folder structure

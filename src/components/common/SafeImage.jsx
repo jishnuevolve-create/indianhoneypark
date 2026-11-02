@@ -1,5 +1,6 @@
 import { ImageOff } from 'lucide-react';
 import { useState } from 'react';
+import { withBase, withBaseSrcSet } from '../../utils/assetUrl';
 
 /*
   An <img> that never shows a broken-image icon.
@@ -37,8 +38,8 @@ function SafeImage({ src, fallbackSrc, alt, className = '', loading = 'lazy', sr
 
   return (
     <img
-      src={currentSrc}
-      srcSet={useFallback ? undefined : srcSet}
+      src={withBase(currentSrc)}
+      srcSet={useFallback ? undefined : withBaseSrcSet(srcSet)}
       alt={alt}
       loading={loading}
       decoding="async"

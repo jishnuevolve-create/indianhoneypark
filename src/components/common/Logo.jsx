@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { siteConfig } from '../../data/siteConfig';
+import { withBase } from '../../utils/assetUrl';
 
 /*
   Brand logo + name. The logo image is public/images/logo/indian-honey-logo-128.webp (a small copy of indian-honey-logo.png)
@@ -17,7 +18,7 @@ function Logo({ tone = 'dark', onClick }) {
       aria-label={`${siteConfig.brandName} home`}
     >
       <img
-        src="/images/logo/indian-honey-logo-128.webp"
+        src={withBase('/images/logo/indian-honey-logo-128.webp')}
         alt=""
         className="size-11 sm:size-12"
         width="48"
