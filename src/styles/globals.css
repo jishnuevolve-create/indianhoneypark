@@ -45,14 +45,6 @@
   --animate-float-shadow: float-shadow 6s ease-in-out infinite;
   --animate-spin-slow: spin 40s linear infinite;
   --animate-drift: drift 9s ease-in-out infinite;
-  --animate-marquee: marquee 40s linear infinite;
-
-  /* Honey-name band under the hero: moves one full copy to the left, then repeats */
-  @keyframes marquee {
-    to {
-      transform: translateX(-50%);
-    }
-  }
 
   /* Hero jar gently bobbing up and down */
   @keyframes float {

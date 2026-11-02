@@ -168,7 +168,6 @@ The announcement bar text is in `siteConfig.js → announcement` (set `enabled: 
 ### Scrolling and effects
 
 - **Smooth scrolling** (mouse wheel and trackpad): `src/utils/smoothScroll.js`. Lower `lerp` for a slower, floatier glide, raise it for a snappier one. Phones keep their natural touch scrolling.
-- **Honey-name band** under the hero: `src/components/home/HoneyMarquee.jsx`. Its speed is `--animate-marquee` in `globals.css`.
 - **Story image parallax**: `useParallax(30)` in `src/components/home/BrandStory.jsx`. The number is how far the image drifts.
 - **Fade-in on scroll**: wrap anything in `<Reveal>`.
 
