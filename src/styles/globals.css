@@ -1,0 +1,243 @@
+@import 'tailwindcss';
+
+/*
+  BRAND DESIGN TOKENS
+  Change a colour or font here and it updates across the whole website.
+  Each colour becomes a Tailwind class, e.g. --color-honey -> bg-honey, text-honey, border-honey.
+*/
+@theme {
+  /* Core brand palette */
+  --color-warm-white: #fff9ef; /* page background */
+  --color-surface: #ffffff; /* cards, header bar, form fields */
+  --color-primary: #254331; /* main buttons */
+  --color-primary-hover: #365d41;
+  --color-forest: #1e3627; /* deep green for dark sections */
+  --color-forest-deep: #162a1e; /* footer */
+  --color-honey: #e4a127;
+  --color-ink: #30271d; /* main text */
+  --color-sage: #e8efdf;
+  --color-amber: #a95b22;
+
+  /* Supporting shades */
+  --color-amber-dark: #86461a;
+  --color-ink-soft: #6a5c4c;
+  --color-soft-yellow: #fff1c5;
+  --color-cream: #f7f1e4;
+  --color-cream-dark: #ece4d0;
+  --color-botanical: #687b4f;
+  --color-whatsapp: #1f9d55;
+  --color-sunshine: #ffc527; /* homepage hero background */
+  --color-sunshine-light: #ffdc7d;
+  --color-honey-brown: #6b3d0c;
+
+  /* Fonts: Fraunces for headings, DM Sans for everything else */
+  --font-display: 'Fraunces Variable', Georgia, serif;
+  --font-sans: 'DM Sans Variable', system-ui, sans-serif;
+  --font-script: 'Satisfy', 'Brush Script MT', cursive;
+
+  --shadow-soft: 0 1px 2px rgb(48 39 29 / 0.04), 0 8px 24px -8px rgb(48 39 29 / 0.08);
+  --shadow-lift: 0 2px 4px rgb(48 39 29 / 0.04), 0 20px 40px -16px rgb(48 39 29 / 0.18);
+
+  --animate-fade-up: fade-up 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
+  --animate-fade-in: fade-in 0.6s ease both;
+  --animate-bump: bump 0.35s ease;
+  --animate-float: float 6s ease-in-out infinite;
+  --animate-float-shadow: float-shadow 6s ease-in-out infinite;
+  --animate-spin-slow: spin 40s linear infinite;
+  --animate-drift: drift 9s ease-in-out infinite;
+  --animate-marquee: marquee 40s linear infinite;
+
+  /* Honey-name band under the hero: moves one full copy to the left, then repeats */
+  @keyframes marquee {
+    to {
+      transform: translateX(-50%);
+    }
+  }
+
+  /* Hero jar gently bobbing up and down */
+  @keyframes float {
+    50% {
+      transform: translateY(-14px);
+    }
+  }
+
+  /* The jar's shadow shrinks while the jar floats up */
+  @keyframes float-shadow {
+    50% {
+      transform: scaleX(0.82);
+      opacity: 0.55;
+    }
+  }
+
+  /* Small decorative hexagons drifting around the hero jar */
+  @keyframes drift {
+    50% {
+      transform: translate(8px, -18px) rotate(20deg);
+    }
+  }
+
+  @keyframes fade-up {
+    from {
+      opacity: 0;
+      transform: translateY(24px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes bump {
+    50% {
+      transform: scale(1.18);
+    }
+  }
+}
+
+@layer base {
+  /*
+    Total height of the floating header (gap above + rounded bar).
+    The hero and pinned sections use this to leave room for the header.
+  */
+  :root {
+    --header-h: 76px;
+  }
+
+  @media (min-width: 640px) {
+    :root {
+      --header-h: 84px;
+    }
+  }
+
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: var(--header-h);
+    -webkit-text-size-adjust: 100%;
+  }
+
+  /* When Lenis smooth scrolling is running it does the smoothing itself,
+     so the browser's own smooth scrolling must be off to avoid the two fighting. */
+  html.lenis {
+    scroll-behavior: auto;
+  }
+
+  body {
+    @apply bg-warm-white font-sans text-base text-ink antialiased;
+    line-height: 1.6;
+    overflow-x: hidden;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* Phones zoom in when a form field's text is under 16px, so keep them at 16px there */
+  @media (max-width: 639px) {
+    input,
+    select,
+    textarea {
+      font-size: 16px !important;
+    }
+  }
+
+  /* One heading style for the whole site (sizes are set per section) */
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply font-display;
+    font-weight: 600;
+    /* --tw-leading makes Tailwind text-size classes (text-3xl…) keep this line height too */
+    --tw-leading: 1.15;
+    line-height: 1.15;
+    letter-spacing: -0.025em;
+    text-wrap: balance;
+  }
+
+  h1 {
+    font-size: clamp(2.5rem, 5vw, 4.5rem);
+  }
+
+  /* Buttons and links use the body font, except links inside headings */
+  button,
+  a {
+    font-family: var(--font-sans);
+  }
+
+  :is(h1, h2, h3, h4) a {
+    font-family: inherit;
+  }
+
+  /* Clearly visible keyboard focus for accessibility */
+  :focus-visible {
+    outline: 2px solid var(--color-amber);
+    outline-offset: 3px;
+    border-radius: 6px;
+  }
+
+  ::selection {
+    background: var(--color-soft-yellow);
+  }
+}
+
+@layer components {
+  /* Small uppercase label shown above headings */
+  .eyebrow {
+    @apply font-sans text-xs font-semibold tracking-[0.22em] text-amber uppercase;
+  }
+
+  /*
+    Homepage hero background: flat golden yellow with one soft glow towards the
+    top right. It stays the same for every jar shown in the hero.
+  */
+  .hero-sunshine {
+    background:
+      radial-gradient(
+        ellipse 45% 65% at 80% 30%,
+        #ffe69e 0%,
+        rgb(255 222 131 / 0.8) 40%,
+        transparent 75%
+      ),
+      var(--color-sunshine);
+  }
+
+  /* Section reveal on scroll (toggled by the Reveal component) */
+  .reveal {
+    opacity: 0;
+    transform: translateY(28px);
+    transition:
+      opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1),
+      transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .reveal.is-visible {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Respect users who prefer less motion */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .reveal {
+    opacity: 1;
+    transform: none;
+  }
+}
