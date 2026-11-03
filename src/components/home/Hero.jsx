@@ -1,9 +1,11 @@
 import { ArrowRight, ChevronDown } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { heroContent } from '../../data/homeContent';
 import { siteConfig } from '../../data/siteConfig';
 import { useScrollSteps } from '../../hooks/useScrollSteps';
+import { getHeroScrollProgress, getNearestRestingJar } from '../../utils/heroScroll';
 import { getProductBySlug } from '../../utils/productUtils';
+import { isSmoothScrollActive } from '../../utils/smoothScroll';
 import Button from '../common/Button';
 import Container from '../common/Container';
 import WhatsAppButton from '../common/WhatsAppButton';
@@ -11,6 +13,9 @@ import HeroShowcase from './HeroShowcase';
 
 // How much scrolling (in % of the screen height) each jar stays on screen for.
 const SCROLL_PER_SLIDE_VH = 70;
+
+// How long the visitor must stop scrolling before the hero settles on the nearest jar.
+const SETTLE_DELAY_MS = 220;
 
 // The hero pins on every screen at least 450px tall (all phones held upright).
 // On phones the sizes below scale with the screen height so everything fits.
@@ -39,6 +44,30 @@ function Hero() {
     HERO_PINNED_QUERY,
   );
   const [selectedIndex, setSelectedIndex] = useState(0);
+
+  /*
+    If the visitor stops scrolling half-way between two jars, glide to the nearest
+    one so the hero never rests on a half-finished change. Only with mouse-wheel
+    smooth scrolling: on phones it would fight the natural flick-scrolling.
+  */
+  useEffect(() => {
+    if (!isPinned) return undefined;
+    let timerId;
+    function handleScroll() {
+      clearTimeout(timerId);
+      timerId = setTimeout(() => {
+        if (!isSmoothScrollActive()) return;
+        const progress = getHeroScrollProgress(containerRef.current);
+        const nearestJar = getNearestRestingJar(progress, slides.length);
+        if (nearestJar !== null) scrollToStep(nearestJar);
+      }, SETTLE_DELAY_MS);
+    }
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      clearTimeout(timerId);
+    };
+  }, [isPinned, containerRef, scrollToStep]);
 
   if (slides.length === 0) return null;
 
@@ -76,6 +105,8 @@ function Hero() {
                 slides={slides}
                 activeIndex={activeIndex}
                 onSelect={isPinned ? scrollToStep : setSelectedIndex}
+                trackRef={containerRef}
+                isPinned={isPinned}
               />
             </div>
 

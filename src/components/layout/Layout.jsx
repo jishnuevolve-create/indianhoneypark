@@ -6,6 +6,7 @@ import ErrorBoundary from '../common/ErrorBoundary';
 import LoadingSpinner from '../common/LoadingSpinner';
 import ScrollToTop from '../common/ScrollToTop';
 import AnnouncementBar from './AnnouncementBar';
+import FloatingActions from './FloatingActions';
 import Footer from './Footer';
 import Header from './Header';
 
@@ -36,6 +37,7 @@ function Layout() {
         </ErrorBoundary>
       </main>
       <Footer />
+      <FloatingActions />
       <CartDrawer />
     </>
   );

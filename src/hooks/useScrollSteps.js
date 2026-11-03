@@ -45,7 +45,8 @@ export function useScrollSteps(stepCount, pinnedQuery = DEFAULT_PINNED_QUERY) {
         const scrollableDistance = height - window.innerHeight;
         const scrolled = scrollableDistance > 0 ? -top / scrollableDistance : 1;
         const newProgress = Math.min(1, Math.max(0, scrolled));
-        setProgress(newProgress);
+        // Rounded so React only updates when the change is visible (fewer re-renders while scrolling).
+        setProgress(Math.round(newProgress * 200) / 200);
         setActiveStep(Math.min(stepCount - 1, Math.floor(newProgress * stepCount)));
         return;
       }

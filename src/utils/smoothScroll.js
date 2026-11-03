@@ -14,11 +14,18 @@ export function startSmoothScroll() {
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   if (lenis || prefersReducedMotion) return () => {};
 
-  lenis = new Lenis({ autoRaf: true, lerp: 0.09, wheelMultiplier: 0.9 });
+  // lerp: how much of the remaining distance is covered each frame (lower = longer, silkier glide)
+  lenis = new Lenis({ autoRaf: true, lerp: 0.075, wheelMultiplier: 1 });
   return () => {
     lenis?.destroy();
     lenis = null;
   };
+}
+
+// True when mouse-wheel smooth scrolling is in use: Lenis is running and the visitor
+// has a mouse or trackpad (on touch screens scrolling stays native).
+export function isSmoothScrollActive() {
+  return lenis !== null && window.matchMedia('(pointer: fine)').matches;
 }
 
 // Stops page scrolling (e.g. while a drawer is open) and starts it again.
