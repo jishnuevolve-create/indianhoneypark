@@ -12,23 +12,24 @@ export const siteConfig = {
   // WhatsApp number in international format: country code + number, digits only.
   // Example for India: '919876543210' (91 = India, then the 10-digit mobile number).
   // Until this is set, WhatsApp buttons show a friendly "not configured" message.
-  whatsappNumber: '',
+  whatsappNumber: '919995701530', // +91 99957 01530 — all WhatsApp orders go here
 
   currency: {
     code: 'INR',
     locale: 'en-IN',
   },
 
+  // Thin message bar above the header. Set enabled: true to show it again.
   announcement: {
-    enabled: true,
+    enabled: false,
     message: 'Seven honey varieties, now available to order on WhatsApp',
     linkLabel: 'Shop now',
     linkTo: '/shop',
   },
 
   contact: {
-    phone: '', // e.g. '+91 98765 43210'
-    email: '', // e.g. 'hello@indianhoney.in'
+    phone: '+91 99957 01530',
+    email: 'indianhoneypark90@gmail.com',
     address: '', // e.g. 'Street, City, State, PIN'
     hours: '', // e.g. 'Mon–Sat, 10am–6pm'
   },
