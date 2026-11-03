@@ -15,14 +15,21 @@ function smoothStep(start, end, value) {
 }
 
 // Each jar's stretch of scrolling: it changes only in the middle part,
-// so the jar "holds" still before and after a change.
-const CHANGE_STARTS_AT = 0.3;
-const CHANGE_ENDS_AT = 0.7;
+// so the jar "holds" still for a moment before and after a change.
+const CHANGE_STARTS_AT = 0.25;
+const CHANGE_ENDS_AT = 0.75;
 
-export function getHeroScrollProgress(trackElement) {
+/*
+  The track is the tall wrapper; its first child is the pinned panel.
+  Using the panel's own height (a fixed "svh" height) instead of the browser
+  window height keeps the jars steady on phones while the address bar
+  slides in and out.
+*/
+export function getScrollTrackProgress(trackElement) {
   if (!trackElement) return 0;
   const { top, height } = trackElement.getBoundingClientRect();
-  const scrollableDistance = height - window.innerHeight;
+  const pinnedPanelHeight = trackElement.firstElementChild?.offsetHeight || window.innerHeight;
+  const scrollableDistance = height - pinnedPanelHeight;
   return scrollableDistance > 0 ? clamp(-top / scrollableDistance, 0, 1) : 0;
 }
 
@@ -40,13 +47,16 @@ export function getJarPhase(position, jarIndex) {
 }
 
 /*
-  Where to settle if the visitor stops scrolling half-way through a change:
-  the nearest jar, or null if the hero is already resting on a jar.
+  Where to settle if the visitor stops scrolling half-way through a change.
+  It always finishes the change in the direction they were scrolling
+  (direction: 1 = down, -1 = up), so it never pulls against them.
+  Returns null if the hero is already resting on a jar.
 */
-export function getNearestRestingJar(progress, jarCount) {
+export function getRestingJarInDirection(progress, jarCount, direction) {
   const position = getSlidePosition(progress, jarCount);
-  const fraction = position - Math.floor(position);
-  const isMidChange = fraction > CHANGE_STARTS_AT - 0.05 && fraction < CHANGE_ENDS_AT + 0.05;
+  const current = Math.floor(position);
+  const fraction = position - current;
+  const isMidChange = fraction > CHANGE_STARTS_AT && fraction < CHANGE_ENDS_AT;
   if (!isMidChange || progress <= 0 || progress >= 1) return null;
-  return Math.round(position);
+  return direction >= 0 ? current + 1 : current;
 }

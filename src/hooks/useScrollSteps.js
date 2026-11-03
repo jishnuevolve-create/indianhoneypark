@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { getScrollTrackProgress } from '../utils/heroScroll';
 import { scrollToPosition } from '../utils/smoothScroll';
 
 // By default, pinning needs a screen wide AND tall enough to show all steps at once.
@@ -41,10 +42,7 @@ export function useScrollSteps(stepCount, pinnedQuery = DEFAULT_PINNED_QUERY) {
       if (!container) return;
 
       if (isPinned) {
-        const { top, height } = container.getBoundingClientRect();
-        const scrollableDistance = height - window.innerHeight;
-        const scrolled = scrollableDistance > 0 ? -top / scrollableDistance : 1;
-        const newProgress = Math.min(1, Math.max(0, scrolled));
+        const newProgress = getScrollTrackProgress(container);
         // Rounded so React only updates when the change is visible (fewer re-renders while scrolling).
         setProgress(Math.round(newProgress * 200) / 200);
         setActiveStep(Math.min(stepCount - 1, Math.floor(newProgress * stepCount)));
@@ -82,7 +80,8 @@ export function useScrollSteps(stepCount, pinnedQuery = DEFAULT_PINNED_QUERY) {
       const container = containerRef.current;
       if (!container || !isPinned) return;
       const { top, height } = container.getBoundingClientRect();
-      const scrollableDistance = height - window.innerHeight;
+      const pinnedPanelHeight = container.firstElementChild?.offsetHeight || window.innerHeight;
+      const scrollableDistance = height - pinnedPanelHeight;
       const containerTop = window.scrollY + top;
       scrollToPosition(containerTop + ((index + 0.5) / stepCount) * scrollableDistance);
     },

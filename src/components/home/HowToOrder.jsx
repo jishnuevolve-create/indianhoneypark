@@ -7,7 +7,7 @@ import Icon from '../common/Icon';
 import SectionHeading from '../common/SectionHeading';
 
 // How much extra scrolling (in % of the screen height) each step stays highlighted for.
-const SCROLL_PER_STEP_VH = 60;
+const SCROLL_PER_STEP_VH = 45;
 
 /*
   Three ordering steps that light up one by one as the visitor scrolls.
@@ -31,9 +31,7 @@ function HowToOrder() {
       >
         <div
           className={
-            isPinned
-              ? 'sticky top-0 flex h-screen flex-col justify-center pt-(--header-h)'
-              : 'py-20'
+            isPinned ? 'sticky top-0 flex h-svh flex-col justify-center pt-(--header-h)' : 'py-20'
           }
         >
           <Container>

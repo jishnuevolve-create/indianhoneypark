@@ -1,6 +1,6 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { withBase } from '../../utils/assetUrl';
-import { getHeroScrollProgress, getJarPhase, getSlidePosition } from '../../utils/heroScroll';
+import { getJarPhase, getScrollTrackProgress, getSlidePosition } from '../../utils/heroScroll';
 
 const MAX_TILT_DEGREES = 8;
 
@@ -49,6 +49,19 @@ function HeroShowcase({ slides, activeIndex, onSelect, trackRef, isPinned }) {
   const jarRefs = useRef([]);
   const fillRefs = useRef([]);
   const slideCount = slides.length;
+  // After the first jar has loaded, quietly fetch the others so nothing has to
+  // load (or be decoded) in the middle of a scroll.
+  const [loadAllJars, setLoadAllJars] = useState(false);
+
+  function handleJarLoad(event, index) {
+    // Decode the picture ahead of time, so its first appearance doesn't stutter.
+    event.currentTarget.decode?.().catch(() => {});
+    if (index === 0 && !loadAllJars) {
+      const startLoading = () => setLoadAllJars(true);
+      if ('requestIdleCallback' in window) window.requestIdleCallback(startLoading);
+      else setTimeout(startLoading, 300);
+    }
+  }
 
   useEffect(() => {
     if (!isPinned) return undefined;
@@ -57,7 +70,7 @@ function HeroShowcase({ slides, activeIndex, onSelect, trackRef, isPinned }) {
 
     function render() {
       frameId = null;
-      const progress = getHeroScrollProgress(trackRef.current);
+      const progress = getScrollTrackProgress(trackRef.current);
       const position = getSlidePosition(progress, slideCount);
 
       jarRefs.current.forEach((jar, index) => {
@@ -154,7 +167,7 @@ function HeroShowcase({ slides, activeIndex, onSelect, trackRef, isPinned }) {
           <div className="absolute inset-0 animate-float">
             {slides.map((slide, index) => {
               const isActive = index === activeIndex;
-              const shouldLoad = index <= activeIndex + 1;
+              const shouldLoad = loadAllJars || index <= activeIndex + 1;
               // Light WebP copies sit next to each PNG (jar.webp = 900px, jar-600.webp = 600px).
               // Browsers use the WebP; the PNG is the fallback for very old browsers.
               const webp900 = withBase(slide.image).replace(/\.png$/, '.webp');
@@ -187,6 +200,7 @@ function HeroShowcase({ slides, activeIndex, onSelect, trackRef, isPinned }) {
                     height="900"
                     fetchPriority={index === 0 ? 'high' : 'low'}
                     decoding="async"
+                    onLoad={(event) => handleJarLoad(event, index)}
                     className={`pointer-events-none absolute inset-0 size-full object-contain drop-shadow-[0_24px_30px_rgb(107_61_12/0.25)] ${stateClasses}`}
                   />
                 </picture>

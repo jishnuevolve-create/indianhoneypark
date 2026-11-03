@@ -168,7 +168,7 @@ The announcement bar text is in `siteConfig.js → announcement` (set `enabled: 
 ### Scrolling and effects
 
 - **Smooth scrolling** (mouse wheel and trackpad): `src/utils/smoothScroll.js`. Lower `lerp` for a slower, floatier glide, raise it for a snappier one. Phones keep their natural touch scrolling.
-- **Hero jars**: the jars move with the scroll. Each jar holds still, then hands over to the next while the progress bar ("01 ━━ ━━ ━━ ━━ 04") fills. The timing of each hand-over is set in `src/utils/heroScroll.js` (`CHANGE_STARTS_AT` / `CHANGE_ENDS_AT`). On computers, if a visitor stops half-way through a hand-over, the hero glides to the nearest jar (`SETTLE_DELAY_MS` in `Hero.jsx`).
+- **Hero jars**: the jars move with the scroll. Each jar holds still, then hands over to the next while the progress bar ("01 ━━ ━━ ━━ ━━ 04") fills. The timing of each hand-over is set in `src/utils/heroScroll.js` (`CHANGE_STARTS_AT` / `CHANGE_ENDS_AT`). On computers, if a visitor stops half-way through a hand-over, the hero finishes it in the direction they were scrolling, so it never pulls against them (`SETTLE_DELAY_MS` in `Hero.jsx`). The Back button returns visitors to where they were on the previous page (`ScrollToTop.jsx`).
 - **Story image parallax**: `useParallax(30)` in `src/components/home/BrandStory.jsx`. The number is how far the image drifts.
 - **Floating buttons**: back-to-top, plus a WhatsApp button on phones, appear after the hero (`src/components/layout/FloatingActions.jsx`).
 - **Fade-in on scroll**: wrap anything in `<Reveal>`.

@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { heroContent } from '../../data/homeContent';
 import { siteConfig } from '../../data/siteConfig';
 import { useScrollSteps } from '../../hooks/useScrollSteps';
-import { getHeroScrollProgress, getNearestRestingJar } from '../../utils/heroScroll';
+import { getRestingJarInDirection, getScrollTrackProgress } from '../../utils/heroScroll';
 import { getProductBySlug } from '../../utils/productUtils';
 import { isSmoothScrollActive } from '../../utils/smoothScroll';
 import Button from '../common/Button';
@@ -12,10 +12,10 @@ import WhatsAppButton from '../common/WhatsAppButton';
 import HeroShowcase from './HeroShowcase';
 
 // How much scrolling (in % of the screen height) each jar stays on screen for.
-const SCROLL_PER_SLIDE_VH = 70;
+const SCROLL_PER_SLIDE_VH = 55;
 
-// How long the visitor must stop scrolling before the hero settles on the nearest jar.
-const SETTLE_DELAY_MS = 220;
+// How long the visitor must stop scrolling before the hero finishes a half-done change.
+const SETTLE_DELAY_MS = 350;
 
 // The hero pins on every screen at least 450px tall (all phones held upright).
 // On phones the sizes below scale with the screen height so everything fits.
@@ -46,20 +46,25 @@ function Hero() {
   const [selectedIndex, setSelectedIndex] = useState(0);
 
   /*
-    If the visitor stops scrolling half-way between two jars, glide to the nearest
-    one so the hero never rests on a half-finished change. Only with mouse-wheel
-    smooth scrolling: on phones it would fight the natural flick-scrolling.
+    If the visitor stops scrolling half-way between two jars, finish the change
+    in the direction they were scrolling, so the hero never rests half-changed
+    and never pulls against them. Only with mouse-wheel smooth scrolling: on
+    phones it would fight the natural flick-scrolling.
   */
   useEffect(() => {
     if (!isPinned) return undefined;
     let timerId;
+    let lastScrollY = window.scrollY;
+    let direction = 1;
     function handleScroll() {
+      if (window.scrollY !== lastScrollY) direction = window.scrollY > lastScrollY ? 1 : -1;
+      lastScrollY = window.scrollY;
       clearTimeout(timerId);
       timerId = setTimeout(() => {
         if (!isSmoothScrollActive()) return;
-        const progress = getHeroScrollProgress(containerRef.current);
-        const nearestJar = getNearestRestingJar(progress, slides.length);
-        if (nearestJar !== null) scrollToStep(nearestJar);
+        const progress = getScrollTrackProgress(containerRef.current);
+        const targetJar = getRestingJarInDirection(progress, slides.length, direction);
+        if (targetJar !== null) scrollToStep(targetJar);
       }, SETTLE_DELAY_MS);
     }
     window.addEventListener('scroll', handleScroll, { passive: true });
