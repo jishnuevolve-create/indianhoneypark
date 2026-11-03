@@ -42,7 +42,7 @@ function ProductCard({ product }) {
             '(min-width: 1280px) 25vw, (min-width: 1024px) 33vw, 50vw',
           )}
           alt=""
-          className="h-[86%] w-full object-contain mix-blend-multiply transition-transform duration-700 ease-out group-hover:scale-105"
+          className="h-[86%] w-full object-contain transition-transform duration-700 ease-out group-hover:scale-105"
         />
       </Link>
 

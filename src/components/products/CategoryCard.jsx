@@ -20,7 +20,7 @@ function CategoryCard({ product }) {
         <SafeImage
           {...getResponsiveImageProps(product.images?.[0], '(min-width: 1024px) 25vw, 50vw')}
           alt={`${product.name} bottle`}
-          className="relative h-[88%] w-full object-contain object-bottom mix-blend-multiply transition-transform duration-700 ease-out group-hover:scale-105"
+          className="relative h-[88%] w-full object-contain object-bottom transition-transform duration-700 ease-out group-hover:scale-105"
         />
       </div>
       <div className="flex flex-1 flex-col p-3 sm:p-5">

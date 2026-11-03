@@ -8,7 +8,6 @@ import SafeImage from '../common/SafeImage';
   - initialImage: the image to show first (e.g. the selected bottle's photo).
   - onImageSelect: called when a thumbnail is clicked, so the page can select
     the matching bottle option.
-  Product photos use "mix-blend-multiply" so white photo backgrounds blend into the card colour.
 */
 function ProductGallery({ images, productName, tint, initialImage, onImageSelect }) {
   const safeImages = images && images.length > 0 ? images : [''];
@@ -34,7 +33,7 @@ function ProductGallery({ images, productName, tint, initialImage, onImageSelect
           {...getResponsiveImageProps(activeImage, '(min-width: 1024px) 45vw, 100vw')}
           alt={`${productName} — image ${activeIndex + 1}`}
           loading="eager"
-          className="relative h-[85%] w-full animate-fade-in object-contain mix-blend-multiply transition-transform duration-700 ease-out group-hover:scale-105"
+          className="relative h-[85%] w-full animate-fade-in object-contain transition-transform duration-700 ease-out group-hover:scale-105"
         />
       </div>
 
@@ -57,7 +56,7 @@ function ProductGallery({ images, productName, tint, initialImage, onImageSelect
               <SafeImage
                 {...getThumbnailImageProps(image)}
                 alt=""
-                className="size-full object-contain p-1 mix-blend-multiply"
+                className="size-full object-contain p-1"
               />
             </button>
           ))}

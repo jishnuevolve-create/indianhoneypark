@@ -2,8 +2,12 @@ import { ArrowRight, ChevronDown } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { heroContent } from '../../data/homeContent';
 import { siteConfig } from '../../data/siteConfig';
-import { useScrollSteps } from '../../hooks/useScrollSteps';
-import { getRestingJarInDirection, getScrollTrackProgress } from '../../utils/heroScroll';
+import { useHeroScroll } from '../../hooks/useHeroScroll';
+import {
+  getProgressForJar,
+  getRestingJarInDirection,
+  getScrollTrackProgress,
+} from '../../utils/heroScroll';
 import { getProductBySlug } from '../../utils/productUtils';
 import { isSmoothScrollActive } from '../../utils/smoothScroll';
 import Button from '../common/Button';
@@ -11,8 +15,8 @@ import Container from '../common/Container';
 import WhatsAppButton from '../common/WhatsAppButton';
 import HeroShowcase from './HeroShowcase';
 
-// How much scrolling (in % of the screen height) each jar stays on screen for.
-const SCROLL_PER_SLIDE_VH = 55;
+// How much scrolling (in % of the screen height) it takes to move from one jar to the next.
+const SCROLL_PER_CHANGE_VH = 65;
 
 // How long the visitor must stop scrolling before the hero finishes a half-done change.
 const SETTLE_DELAY_MS = 350;
@@ -39,9 +43,9 @@ const slides = heroContent.slides
 */
 function Hero() {
   const { badge, headingStart, headingHighlight } = heroContent;
-  const { containerRef, isPinned, activeStep, progress, scrollToStep } = useScrollSteps(
-    slides.length,
+  const { containerRef, isPinned, activeJar, isAtStart, scrollToProgress } = useHeroScroll(
     HERO_PINNED_QUERY,
+    slides.length,
   );
   const [selectedIndex, setSelectedIndex] = useState(0);
 
@@ -64,7 +68,7 @@ function Hero() {
         if (!isSmoothScrollActive()) return;
         const progress = getScrollTrackProgress(containerRef.current);
         const targetJar = getRestingJarInDirection(progress, slides.length, direction);
-        if (targetJar !== null) scrollToStep(targetJar);
+        if (targetJar !== null) scrollToProgress(getProgressForJar(targetJar, slides.length));
       }, SETTLE_DELAY_MS);
     }
     window.addEventListener('scroll', handleScroll, { passive: true });
@@ -72,12 +76,13 @@ function Hero() {
       window.removeEventListener('scroll', handleScroll);
       clearTimeout(timerId);
     };
-  }, [isPinned, containerRef, scrollToStep]);
+  }, [isPinned, containerRef, scrollToProgress]);
 
   if (slides.length === 0) return null;
 
-  // Pinned: scrolling decides the jar. Not pinned: the dots do.
-  const activeIndex = isPinned ? activeStep : selectedIndex;
+  // Pinned: scrolling decides the jar. Not pinned: the progress segments do.
+  const activeIndex = isPinned ? activeJar : selectedIndex;
+  const showJar = (index) => scrollToProgress(getProgressForJar(index, slides.length));
   const activeSlide = slides[activeIndex];
   const { product } = activeSlide;
 
@@ -86,7 +91,9 @@ function Hero() {
       {/* The tall wrapper gives the visitor something to scroll through while the hero is pinned */}
       <div
         ref={containerRef}
-        style={isPinned ? { height: `${100 + slides.length * SCROLL_PER_SLIDE_VH}vh` } : undefined}
+        style={
+          isPinned ? { height: `${100 + (slides.length - 1) * SCROLL_PER_CHANGE_VH}vh` } : undefined
+        }
       >
         <div
           className={`hero-sunshine relative overflow-hidden pt-(--header-h) ${
@@ -109,7 +116,7 @@ function Hero() {
               <HeroShowcase
                 slides={slides}
                 activeIndex={activeIndex}
-                onSelect={isPinned ? scrollToStep : setSelectedIndex}
+                onSelect={isPinned ? showJar : setSelectedIndex}
                 trackRef={containerRef}
                 isPinned={isPinned}
               />
@@ -156,7 +163,7 @@ function Hero() {
           {isPinned && (
             <div
               className={`pointer-events-none absolute inset-x-0 bottom-5 hidden flex-col items-center gap-1 text-xs font-semibold tracking-[0.2em] text-honey-brown/70 uppercase transition-opacity duration-500 lg:flex ${
-                progress < 0.03 ? 'opacity-100' : 'opacity-0'
+                isAtStart ? 'opacity-100' : 'opacity-0'
               }`}
               aria-hidden="true"
             >

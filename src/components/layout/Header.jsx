@@ -31,13 +31,17 @@ function Header() {
   // Watches whether the homepage hero (id="home-hero") is still behind the header.
   useEffect(() => {
     let frameId = null;
+    // Read the header height once (and again on resize), not on every scroll frame.
+    let headerBottom = 0;
+    function measureHeader() {
+      headerBottom = parseFloat(
+        getComputedStyle(document.documentElement).getPropertyValue('--header-h'),
+      );
+    }
 
     function updateHeaderStyle() {
       frameId = null;
       const hero = document.getElementById('home-hero');
-      const headerBottom = parseFloat(
-        getComputedStyle(document.documentElement).getPropertyValue('--header-h'),
-      );
       setIsOverHero(Boolean(hero) && hero.getBoundingClientRect().bottom > headerBottom);
     }
 
@@ -45,12 +49,18 @@ function Header() {
       if (frameId === null) frameId = requestAnimationFrame(updateHeaderStyle);
     }
 
+    function handleResize() {
+      measureHeader();
+      scheduleUpdate();
+    }
+
+    measureHeader();
     scheduleUpdate();
     window.addEventListener('scroll', scheduleUpdate, { passive: true });
-    window.addEventListener('resize', scheduleUpdate);
+    window.addEventListener('resize', handleResize);
     return () => {
       window.removeEventListener('scroll', scheduleUpdate);
-      window.removeEventListener('resize', scheduleUpdate);
+      window.removeEventListener('resize', handleResize);
       if (frameId !== null) cancelAnimationFrame(frameId);
     };
   }, [pathname]);

@@ -1,6 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
 import { withBase } from '../../utils/assetUrl';
-import { getJarPhase, getScrollTrackProgress, getSlidePosition } from '../../utils/heroScroll';
+import {
+  getJarPhase,
+  getScrollTrackProgress,
+  getSegmentFill,
+  getSlidePosition,
+} from '../../utils/heroScroll';
 
 const MAX_TILT_DEGREES = 8;
 
@@ -34,8 +39,9 @@ function padNumber(number) {
   The jar in the centre of the hero.
 
   Pinned (scroll-driven) mode: the jars move exactly as far as the visitor scrolls.
-  The current jar lifts up and fades while the next one rises in; between changes
-  each jar holds still. The progress bar under the jar fills at the same time.
+  The current jar lifts up and fades while the next one rises in. Between changes
+  something always moves with the scroll (the jar drifts gently, the dotted ring
+  turns, the hexagons rise and the progress bar fills), so scrolling never feels stuck.
   These styles are written straight to the elements on every frame (no React
   re-render), which keeps the motion smooth on slower phones.
 
@@ -48,6 +54,8 @@ function HeroShowcase({ slides, activeIndex, onSelect, trackRef, isPinned }) {
   const tiltRef = useRef(null);
   const jarRefs = useRef([]);
   const fillRefs = useRef([]);
+  const ringRef = useRef(null);
+  const hexagonLayerRef = useRef(null);
   const slideCount = slides.length;
   // After the first jar has loaded, quietly fetch the others so nothing has to
   // load (or be decoded) in the middle of a scroll.
@@ -77,6 +85,8 @@ function HeroShowcase({ slides, activeIndex, onSelect, trackRef, isPinned }) {
         if (!jar) return;
         const phase = getJarPhase(position, index); // -1 gone up, 0 centre, +1 waiting below
         const distance = Math.abs(phase);
+        // Gentle drift that follows the scroll even while a jar is holding still.
+        const drift = position - index;
         // Fade quickly, so the old jar has mostly gone before the new one is clearly
         // visible (a clean hand-over instead of two labels overlapping).
         const opacity = Math.max(0, 1 - distance * 1.7);
@@ -84,14 +94,20 @@ function HeroShowcase({ slides, activeIndex, onSelect, trackRef, isPinned }) {
         jar.style.visibility = opacity <= 0 ? 'hidden' : 'visible';
         jar.style.transform = prefersReducedMotion
           ? 'scale(1.1)'
-          : `translate3d(0, ${phase * 16}%, 0) scale(${1.1 - distance * 0.14}) rotate(${phase * 8}deg)`;
+          : `translate3d(0, ${phase * 16 - drift * 10}%, 0) scale(${1.1 - distance * 0.14}) rotate(${phase * 8 - drift * 4}deg)`;
       });
 
       fillRefs.current.forEach((fill, index) => {
         if (!fill) return;
-        const filled = Math.min(1, Math.max(0, progress * slideCount - index));
-        fill.style.transform = `scaleX(${filled})`;
+        fill.style.transform = `scaleX(${getSegmentFill(position, index)})`;
       });
+
+      if (!prefersReducedMotion) {
+        if (ringRef.current) ringRef.current.style.transform = `rotate(${progress * 240}deg)`;
+        if (hexagonLayerRef.current) {
+          hexagonLayerRef.current.style.transform = `translate3d(0, ${-progress * 14}%, 0)`;
+        }
+      }
     }
 
     function scheduleRender() {
@@ -139,17 +155,19 @@ function HeroShowcase({ slides, activeIndex, onSelect, trackRef, isPinned }) {
           className="absolute inset-[14%] rounded-full bg-sunshine-light shadow-[0_0_60px_10px_rgb(255_220_125/0.5)]"
           aria-hidden="true"
         />
-        <div
-          className="absolute inset-[7%] animate-spin-slow rounded-full border-2 border-dashed border-honey-brown/15"
-          aria-hidden="true"
-        />
-        {floatingHexagons.map(([position, size, delay]) => (
-          <Hexagon
-            key={position}
-            className={`absolute animate-drift ${position} ${size}`}
-            style={{ animationDelay: delay }}
-          />
-        ))}
+        {/* The outer layer turns with the scroll; the inner ring also turns slowly on its own */}
+        <div ref={ringRef} className="absolute inset-[7%]" aria-hidden="true">
+          <div className="size-full animate-spin-slow rounded-full border-2 border-dashed border-honey-brown/15" />
+        </div>
+        <div ref={hexagonLayerRef} className="absolute inset-0" aria-hidden="true">
+          {floatingHexagons.map(([position, size, delay]) => (
+            <Hexagon
+              key={position}
+              className={`absolute animate-drift ${position} ${size}`}
+              style={{ animationDelay: delay }}
+            />
+          ))}
+        </div>
 
         {/* Soft shadow under the jar */}
         <div

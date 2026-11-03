@@ -15,8 +15,33 @@ export function startSmoothScroll() {
   if (lenis || prefersReducedMotion) return () => {};
 
   // lerp: how much of the remaining distance is covered each frame (lower = longer, silkier glide)
-  lenis = new Lenis({ autoRaf: true, lerp: 0.075, wheelMultiplier: 1 });
+  lenis = new Lenis({ autoRaf: true, lerp: 0.1, wheelMultiplier: 1 });
+
+  /*
+    While the site is gliding somewhere by itself (back to top, a hero jar, a menu
+    link), Lenis would ignore the scrollbar and keyboard until it arrives. If the
+    visitor grabs the scrollbar or presses a scrolling key, stop the glide right
+    there so their own scrolling always wins. (The mouse wheel already does this.)
+  */
+  const scrollKeys = ['ArrowUp', 'ArrowDown', 'PageUp', 'PageDown', 'Home', 'End', ' '];
+  function cancelGlide() {
+    if (lenis?.isScrolling === 'smooth') {
+      lenis.scrollTo(window.scrollY, { immediate: true, force: true });
+    }
+  }
+  function handleKeyDown(event) {
+    if (scrollKeys.includes(event.key)) cancelGlide();
+  }
+  function handlePointerDown(event) {
+    // A press to the right of the page content is on the scrollbar.
+    if (event.clientX >= document.documentElement.clientWidth) cancelGlide();
+  }
+  window.addEventListener('keydown', handleKeyDown);
+  window.addEventListener('pointerdown', handlePointerDown);
+
   return () => {
+    window.removeEventListener('keydown', handleKeyDown);
+    window.removeEventListener('pointerdown', handlePointerDown);
     lenis?.destroy();
     lenis = null;
   };

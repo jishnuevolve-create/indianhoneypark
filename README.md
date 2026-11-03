@@ -39,6 +39,8 @@ npm run lint         # checks the code for mistakes
 npm run format       # tidies the code formatting
 ```
 
+> `npm run dev` is the development version: React adds extra checks, so scrolling and animations feel heavier than on the real site. To judge real speed, run `npm run build` and then `npm run preview`.
+
 ---
 
 ## Deploying to Vercel
@@ -168,7 +170,9 @@ The announcement bar text is in `siteConfig.js → announcement` (set `enabled: 
 ### Scrolling and effects
 
 - **Smooth scrolling** (mouse wheel and trackpad): `src/utils/smoothScroll.js`. Lower `lerp` for a slower, floatier glide, raise it for a snappier one. Phones keep their natural touch scrolling.
-- **Hero jars**: the jars move with the scroll. Each jar holds still, then hands over to the next while the progress bar ("01 ━━ ━━ ━━ ━━ 04") fills. The timing of each hand-over is set in `src/utils/heroScroll.js` (`CHANGE_STARTS_AT` / `CHANGE_ENDS_AT`). On computers, if a visitor stops half-way through a hand-over, the hero finishes it in the direction they were scrolling, so it never pulls against them (`SETTLE_DELAY_MS` in `Hero.jsx`). The Back button returns visitors to where they were on the previous page (`ScrollToTop.jsx`).
+- **Hero jars**: the jars move with the scroll. Each jar drifts gently, then hands over to the next while the progress bar ("01 ━━ ━━ ━━ ━━ 04") fills and the dotted ring turns, so scrolling always visibly does something. The timing of each hand-over is set in `src/utils/heroScroll.js` (`CHANGE_STARTS_AT` / `CHANGE_ENDS_AT`); the scroll length per jar is `SCROLL_PER_CHANGE_VH` in `Hero.jsx`. On computers, if a visitor stops half-way through a hand-over, the hero finishes it in the direction they were scrolling, so it never pulls against them (`SETTLE_DELAY_MS` in `Hero.jsx`). The Back button returns visitors to where they were on the previous page (`ScrollToTop.jsx`).
+- **How to Order**: scrolls normally (not pinned); the steps light up and the gold line fills as they move up the screen (`src/hooks/useStepsProgress.js`).
+- If the site is gliding somewhere by itself (back to top, a hero jar), pressing a scroll key or grabbing the scrollbar stops the glide immediately (`src/utils/smoothScroll.js`).
 - **Story image parallax**: `useParallax(30)` in `src/components/home/BrandStory.jsx`. The number is how far the image drifts.
 - **Floating buttons**: back-to-top, plus a WhatsApp button on phones, appear after the hero (`src/components/layout/FloatingActions.jsx`).
 - **Fade-in on scroll**: wrap anything in `<Reveal>`.

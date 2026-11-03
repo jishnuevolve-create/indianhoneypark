@@ -70,7 +70,7 @@ function SearchDialog({ isOpen, onClose }) {
                       <SafeImage
                         {...getThumbnailImageProps(product.images?.[0])}
                         alt=""
-                        className="size-14 object-contain mix-blend-multiply"
+                        className="size-14 object-contain"
                       />
                     </span>
                     <span className="min-w-0 flex-1">
