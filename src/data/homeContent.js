@@ -38,27 +38,29 @@ export const heroContent = {
   ],
 };
 
+// Icons here are custom drawings: 'varieties', 'flavours', 'packaging' or 'whatsapp'
+// (see src/components/home/FeatureIcon.jsx).
 export const whyChooseUsContent = {
   eyebrow: 'Best feature',
   heading: 'We Provide The Best Quality',
   items: [
     {
-      icon: 'Flower2',
+      icon: 'varieties',
       title: 'Selected Varieties',
       text: 'Seven honey varieties, from gentle Acacia to bold Forest honey, so there is one for every taste.',
     },
     {
-      icon: 'Droplets',
+      icon: 'flavours',
       title: 'Distinctive Flavours',
       text: 'Every variety has its own colour, texture and character for you to discover.',
     },
     {
-      icon: 'Package',
+      icon: 'packaging',
       title: 'Thoughtful Packaging',
       text: 'Choose a round jar, square jar or bottle for every honey in our collection.',
     },
     {
-      icon: 'MessageCircle',
+      icon: 'whatsapp',
       title: 'Easy WhatsApp Ordering',
       text: 'Build your cart and send your order in one tap. Our team confirms everything with you personally.',
     },

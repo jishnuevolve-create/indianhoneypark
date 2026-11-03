@@ -1,31 +1,14 @@
-import {
-  Droplets,
-  Flower2,
-  Gift,
-  Leaf,
-  MessageCircle,
-  Package,
-  Search,
-  ShoppingBag,
-  Sparkles,
-  Truck,
-} from 'lucide-react';
+import { MessageCircle, Search, ShoppingBag, Sparkles } from 'lucide-react';
 
 /*
-  Lets data files choose an icon by name, e.g. icon: 'Flower2'.
-  To use a new icon, import it from lucide-react above and add it to this list.
+  Lets data files choose an icon by name, e.g. icon: 'Search' (used by "How to Order").
+  To use a new icon, import it from lucide-react (https://lucide.dev/icons) and add it below.
 */
 const iconsByName = {
-  Droplets,
-  Flower2,
-  Gift,
-  Leaf,
   MessageCircle,
-  Package,
   Search,
   ShoppingBag,
   Sparkles,
-  Truck,
 };
 
 function Icon({ name, ...props }) {
