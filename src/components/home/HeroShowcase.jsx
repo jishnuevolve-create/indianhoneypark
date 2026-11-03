@@ -53,7 +53,7 @@ function HeroShowcase({ slides, activeIndex, onSelect }) {
 
   return (
     <div
-      className="relative mx-auto w-full max-w-[min(300px,34svh)] sm:max-w-[min(440px,46svh)] lg:max-w-[min(520px,60svh)]"
+      className="relative mx-auto w-full max-w-[min(300px,30svh)] sm:max-w-[min(440px,46svh)] lg:max-w-[min(520px,60svh)]"
       aria-roledescription="carousel"
       aria-label="Our honey jars"
     >

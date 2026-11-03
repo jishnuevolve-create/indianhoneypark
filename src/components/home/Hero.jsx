@@ -12,9 +12,10 @@ import HeroShowcase from './HeroShowcase';
 // How much scrolling (in % of the screen height) each jar stays on screen for.
 const SCROLL_PER_SLIDE_VH = 70;
 
-// The hero only pins on screens tall enough to show everything at once.
-// Shorter screens get a normal hero where the dots switch the jar.
-const HERO_PINNED_QUERY = '(min-height: 720px)';
+// The hero pins on every screen at least 450px tall (all phones held upright).
+// On phones the sizes below scale with the screen height so everything fits.
+// Only very short screens (e.g. a phone turned sideways) get a normal hero where the dots switch the jar.
+const HERO_PINNED_QUERY = '(min-height: 450px)';
 
 // Hero slides joined with their product (slides for missing products are skipped).
 const slides = heroContent.slides
@@ -58,13 +59,13 @@ function Hero() {
             isPinned ? 'sticky top-0 flex h-svh flex-col justify-center' : ''
           }`}
         >
-          <Container className="grid items-center gap-3 py-3 sm:gap-6 sm:py-6 lg:grid-cols-12 lg:gap-4">
+          <Container className="grid items-center gap-3 py-3 max-sm:gap-[1.5svh] sm:gap-6 sm:py-6 lg:grid-cols-12 lg:gap-4">
             <div className="animate-fade-up text-center lg:col-span-4">
               <p className="hidden items-center gap-2 rounded-full border border-honey-brown/20 bg-warm-white/35 px-4 py-1.5 text-xs font-semibold tracking-[0.16em] text-honey-brown uppercase sm:inline-flex">
                 <span className="size-1.5 rounded-full bg-honey-brown" aria-hidden="true" />
                 {badge}
               </p>
-              <h1 className="text-ink sm:mt-6">
+              <h1 className="text-ink max-sm:text-[clamp(1.6rem,4.6svh,2.5rem)] sm:mt-6">
                 {headingStart}{' '}
                 <em className="font-semibold text-honey-brown">{headingHighlight}</em>
               </h1>
@@ -83,15 +84,17 @@ function Hero() {
               key={activeSlide.productSlug}
               className="animate-fade-up text-center lg:col-span-4"
             >
-              <p className="font-script text-2xl text-honey-brown sm:text-4xl">
+              <p className="font-script text-[clamp(1.25rem,3.6svh,1.5rem)] text-honey-brown sm:text-4xl">
                 {activeSlide.tagline}
               </p>
-              <h2 className="mt-1 text-2xl font-semibold sm:mt-2 sm:text-3xl">{product.name}</h2>
-              <p className="mx-auto mt-2 line-clamp-3 min-h-[3lh] max-w-sm text-sm leading-relaxed text-ink/75 sm:mt-3 sm:text-lg">
+              <h2 className="mt-1 text-[clamp(1.3rem,3.4svh,1.5rem)] font-semibold sm:mt-2 sm:text-3xl">
+                {product.name}
+              </h2>
+              <p className="mx-auto mt-2 line-clamp-2 min-h-[2lh] max-w-sm text-sm leading-relaxed text-ink/75 sm:mt-3 sm:line-clamp-3 sm:min-h-[3lh] sm:text-lg [@media(max-width:639px)_and_(max-height:620px)]:hidden">
                 {product.description}
               </p>
-              <div className="mt-4 flex flex-wrap items-center justify-center gap-2 sm:mt-7 sm:gap-3 lg:flex-col">
-                <Button to={`/products/${product.slug}`}>
+              <div className="mt-3 flex items-center justify-center gap-2 sm:mt-7 sm:flex-wrap sm:gap-3 lg:flex-col">
+                <Button to={`/products/${product.slug}`} className="max-sm:px-5">
                   View Product
                   <ArrowRight
                     className="size-4 transition-transform duration-300 group-hover:translate-x-1"
@@ -100,7 +103,13 @@ function Hero() {
                 </Button>
                 <WhatsAppButton
                   variant="outline"
-                  className="border-ink/25"
+                  className="border-ink/25 max-sm:px-5"
+                  label={
+                    <>
+                      <span className="sm:hidden">WhatsApp</span>
+                      <span className="hidden sm:inline">Order on WhatsApp</span>
+                    </>
+                  }
                   message={`Hello ${siteConfig.brandName}, I would like to order ${product.name}.`}
                 />
               </div>
