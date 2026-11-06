@@ -9,8 +9,9 @@ export const aboutContent = {
   heading: 'A Trusted Name In Honey Since 1990.',
   intro:
     'Indian Honey Park is an AGMARK approved honey processing and packing unit in Chentrappinni, Thrissur District, Kerala, with over three decades of experience.',
-  image: '/images/lifestyle/story.svg',
-  imageAlt: 'Illustration of a honey jar among flowers and honeycomb',
+  image: '/images/lifestyle/honeycomb.webp',
+  imageSrcSet: '/images/lifestyle/honeycomb-600.webp 600w, /images/lifestyle/honeycomb.webp 1200w',
+  imageAlt: 'Stacked honeycomb with honey dripping from a wooden dipper',
   sections: [
     {
       heading: 'Three decades of honey',

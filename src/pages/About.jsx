@@ -24,9 +24,11 @@ function About() {
         <Reveal className="lg:sticky lg:top-28">
           <SafeImage
             src={aboutContent.image}
+            srcSet={aboutContent.imageSrcSet}
+            sizes="(min-width: 1024px) 50vw, 100vw"
             alt={aboutContent.imageAlt}
             loading="eager"
-            className="aspect-[4/4.5] w-full rounded-[2rem] object-cover"
+            className="aspect-square w-full rounded-[2rem] object-cover"
           />
         </Reveal>
 

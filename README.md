@@ -131,7 +131,7 @@ Photo tips: use square images (1200×1200 px works well) with a transparent back
 
 **Hero jars:** each hero PNG in `public/images/hero/` also has two light WebP copies (`indian-honey.webp` at 900 px and `indian-honey-600.webp` at 600 px). Browsers use the WebP copies; the PNG is the fallback. Update all three together.
 
-The brand story image (`public/images/lifestyle/story.svg`) is still a **placeholder illustration**. Replace it with real photography before launch.
+**Story photo:** the "Our Story" section and the About page use `public/images/lifestyle/honeycomb.webp` (1200 px) and `honeycomb-600.webp` (a lighter copy for phones). To change the photo, replace both files and keep the names, or change `image` and `imageSrcSet` in `homeContent.js` and `pageContent.js`. Use a square photo.
 
 ### Add a new honey product
 

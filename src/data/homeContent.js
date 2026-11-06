@@ -74,8 +74,9 @@ export const brandStoryContent = {
     'Indian Honey Park has been processing and packing honey since 1990, and earned AGMARK Approval from the Government of India in 2004.',
     'We procure pure, natural honey from the forest regions of Nilambur, Kerala. Every batch is vacuum processed to preserve its natural flavour and aroma, and tested in AGMARK-approved laboratories before packing.',
   ],
-  image: '/images/lifestyle/story.svg',
-  imageAlt: 'Illustration of a honey jar among flowers and honeycomb',
+  image: '/images/lifestyle/honeycomb.webp',
+  imageSrcSet: '/images/lifestyle/honeycomb-600.webp 600w, /images/lifestyle/honeycomb.webp 1200w',
+  imageAlt: 'Stacked honeycomb with honey dripping from a wooden dipper',
   buttonLabel: 'About Us',
   buttonLink: '/about',
 };

@@ -7,7 +7,7 @@ import Reveal from '../common/Reveal';
 import SafeImage from '../common/SafeImage';
 
 function BrandStory() {
-  const { eyebrow, heading, paragraphs, image, imageAlt, buttonLabel, buttonLink } =
+  const { eyebrow, heading, paragraphs, image, imageSrcSet, imageAlt, buttonLabel, buttonLink } =
     brandStoryContent;
   const parallaxRef = useParallax(30);
 
@@ -16,9 +16,15 @@ function BrandStory() {
       <Container className="grid items-center gap-12 lg:grid-cols-2 lg:gap-20">
         <Reveal className="relative isolate">
           {/* The picture is slightly taller than its frame so it can drift (parallax) without gaps */}
-          <div className="aspect-[4/4.5] w-full overflow-hidden rounded-[2rem]">
+          <div className="aspect-square w-full overflow-hidden rounded-[2rem]">
             <div ref={parallaxRef} className="-mt-[8%] h-[116%] will-change-transform">
-              <SafeImage src={image} alt={imageAlt} className="size-full object-cover" />
+              <SafeImage
+                src={image}
+                srcSet={imageSrcSet}
+                sizes="(min-width: 1024px) 50vw, 100vw"
+                alt={imageAlt}
+                className="size-full object-cover"
+              />
             </div>
           </div>
           <div
