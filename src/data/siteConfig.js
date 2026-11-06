@@ -30,7 +30,7 @@ export const siteConfig = {
   contact: {
     phone: '+91 99957 01530',
     email: 'indianhoneypark90@gmail.com',
-    address: '', // e.g. 'Street, City, State, PIN'
+    address: 'Chentrappinni, Thrissur District, Kerala – 680 687',
     hours: '', // e.g. 'Mon–Sat, 10am–6pm'
   },
 

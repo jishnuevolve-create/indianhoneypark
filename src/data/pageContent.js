@@ -6,23 +6,31 @@
 
 export const aboutContent = {
   eyebrow: 'Our Story',
-  heading: 'A Sweet Connection With Nature.',
+  heading: 'A Trusted Name In Honey Since 1990.',
   intro:
-    'Indian Honey is a collection of honey varieties chosen for everyday enjoyment. This page is ready for your full brand story.',
+    'Indian Honey Park is an AGMARK approved honey processing and packing unit in Chentrappinni, Thrissur District, Kerala, with over three decades of experience.',
   image: '/images/lifestyle/story.svg',
   imageAlt: 'Illustration of a honey jar among flowers and honeycomb',
   sections: [
     {
-      heading: 'Where it begins',
-      text: 'Share where your honey comes from and how it is selected. Replace this text in src/data/pageContent.js.',
+      heading: 'Three decades of honey',
+      text: 'We have been processing and packing honey since 1990. In 2004, our commitment to quality and food safety earned us AGMARK Approval from the Government of India, reflecting our adherence to stringent national quality standards.',
     },
     {
-      heading: 'What we care about',
-      text: 'Describe what matters to your brand — the experience you want customers to have with every jar.',
+      heading: 'Honey from Nilambur',
+      text: 'We procure pure, natural honey from the forest regions of Nilambur, Kerala, an area known for its rich biodiversity and high-quality honey.',
     },
     {
-      heading: 'Ordering made personal',
-      text: 'Every order is placed through WhatsApp, so you can talk directly with our team before confirming.',
+      heading: 'Processed with care',
+      text: 'Every batch is processed using modern scientific methods and advanced vacuum processing equipment to preserve its natural flavour, aroma, nutritional value and purity. This includes professional filtration, moisture reduction and hygienic packing under controlled conditions.',
+    },
+    {
+      heading: 'Tested before packing',
+      text: 'Each batch is tested in AGMARK-approved laboratories to verify its purity and compliance with prescribed specifications before it is packed. Our experienced, trained team maintains strict quality control throughout processing and packing.',
+    },
+    {
+      heading: 'For customers and businesses',
+      text: 'Order directly from us on WhatsApp and talk to our team before you confirm. We also welcome companies looking for a reliable, quality-focused honey processing and packing partner.',
     },
   ],
 };

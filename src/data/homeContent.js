@@ -70,10 +70,9 @@ export const whyChooseUsContent = {
 export const brandStoryContent = {
   eyebrow: 'Our Story',
   heading: 'A Sweet Connection With Nature.',
-  // Replace these paragraphs with your real brand story.
   paragraphs: [
-    'Indian Honey brings together a collection of honey varieties for everyday moments — from a calm morning cup of tea to a weekend breakfast with family.',
-    'This space is ready for your brand story: where your honey comes from, the people behind it and what makes your collection special to you.',
+    'Indian Honey Park has been processing and packing honey since 1990, and earned AGMARK Approval from the Government of India in 2004.',
+    'We procure pure, natural honey from the forest regions of Nilambur, Kerala. Every batch is vacuum processed to preserve its natural flavour and aroma, and tested in AGMARK-approved laboratories before packing.',
   ],
   image: '/images/lifestyle/story.svg',
   imageAlt: 'Illustration of a honey jar among flowers and honeycomb',
