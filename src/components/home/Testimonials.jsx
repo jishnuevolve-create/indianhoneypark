@@ -1,4 +1,4 @@
-import { Quote } from 'lucide-react';
+import { Quote, Star } from 'lucide-react';
 import { testimonials } from '../../data/homeContent';
 import { siteConfig } from '../../data/siteConfig';
 import Container from '../common/Container';
@@ -27,12 +27,27 @@ function Testimonials() {
         </Reveal>
 
         {hasReviews ? (
-          <ul className="mt-12 grid gap-5 md:grid-cols-2 lg:mt-16 lg:grid-cols-3">
+          <ul className="mx-auto mt-12 grid max-w-5xl gap-5 md:grid-cols-2 lg:mt-16">
             {testimonials.map((review, index) => (
               <Reveal as="li" key={`${review.name}-${index}`} delay={index * 80}>
                 <figure className="flex h-full flex-col rounded-[1.75rem] bg-cream p-7">
-                  <Quote className="size-7 text-honey" aria-hidden="true" />
-                  <blockquote className="mt-4 flex-1 font-display text-xl leading-relaxed">
+                  <div className="flex items-center justify-between gap-4">
+                    <p className="font-display text-lg font-semibold">{review.product}</p>
+                    <div
+                      className="flex shrink-0 gap-0.5"
+                      role="img"
+                      aria-label={`Rated ${review.rating} out of 5`}
+                    >
+                      {Array.from({ length: review.rating }, (_, star) => (
+                        <Star
+                          key={star}
+                          className="size-4 fill-honey text-honey"
+                          aria-hidden="true"
+                        />
+                      ))}
+                    </div>
+                  </div>
+                  <blockquote className="mt-4 flex-1 font-display text-lg leading-relaxed">
                     “{review.quote}”
                   </blockquote>
                   <figcaption className="mt-6 text-sm">

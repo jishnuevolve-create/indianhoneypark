@@ -106,11 +106,44 @@ export const howToOrderContent = {
 /*
   TESTIMONIALS
   Only add real reviews from real customers (with their permission).
-  While this list is empty, the section shows a friendly "reviews coming soon" message.
-  Example:
-  { name: 'Customer name', location: 'City', quote: 'What they said…' },
+  If this list is empty, the section shows a friendly "reviews coming soon" message.
+  - product: the honey the review is about (shown above the stars)
+  - rating: 1 to 5 stars
 */
-export const testimonials = [];
+export const testimonials = [
+  {
+    product: 'Kashmir Honey',
+    rating: 5,
+    quote:
+      'Really loved the taste and quality. The honey has a rich flavour and goes perfectly with my morning tea. Packaging was also neat and premium.',
+    name: 'Customer',
+    location: 'Kochi, Kerala',
+  },
+  {
+    product: 'Acacia Honey',
+    rating: 5,
+    quote:
+      'Very smooth and light in taste. Not too strong or overly sweet. My whole family likes it, especially with breakfast. Definitely worth trying.',
+    name: 'Customer',
+    location: 'Thrissur, Kerala',
+  },
+  {
+    product: 'Litchi Honey',
+    rating: 5,
+    quote:
+      'First time trying litchi honey, and I really liked the flavour. It has a mild sweetness and a lovely aroma. Delivery was quick and the bottle was packed safely.',
+    name: 'Customer',
+    location: 'Kozhikode, Kerala',
+  },
+  {
+    product: 'Forest Honey',
+    rating: 5,
+    quote:
+      'Good quality honey with a nice, rich taste. I usually have it with warm water in the morning. Really happy with the purchase. Will order again.',
+    name: 'Customer',
+    location: 'Kottayam, Kerala',
+  },
+];
 
 export const faqs = [
   {

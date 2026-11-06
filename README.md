@@ -155,7 +155,7 @@ It then appears in the shop, search, footer and related products automatically.
 
 To reorder or remove whole sections, edit `src/pages/Home.jsx`.
 
-**Testimonials:** only add real reviews from real customers, with their permission. While the list is empty, a "reviews coming soon" message is shown.
+**Testimonials:** only add real reviews from real customers, with their permission. Each review has a `product`, `rating`, `quote`, `name` and `location`. If the list is empty, a "reviews coming soon" message is shown.
 
 The announcement bar text is in `siteConfig.js → announcement` (set `enabled: false` to hide it).
 
