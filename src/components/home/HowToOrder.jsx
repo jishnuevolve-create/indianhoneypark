@@ -1,19 +1,21 @@
 import { ArrowRight } from 'lucide-react';
+import { useState } from 'react';
 import { howToOrderContent } from '../../data/homeContent';
-import { useStepsProgress } from '../../hooks/useStepsProgress';
 import Button from '../common/Button';
 import Container from '../common/Container';
 import Icon from '../common/Icon';
 import SectionHeading from '../common/SectionHeading';
 
 /*
-  Three ordering steps that light up one by one, and a gold line that fills,
-  as the steps move up through the screen. The section scrolls normally (it is
-  not pinned), so scrolling never feels stuck here.
+  Three ordering steps. Scrolling changes nothing here: all steps are always shown.
+  A step is highlighted when it is touched or tapped (or hovered with a mouse, or focused
+  with the keyboard), and the gold line fills up to that step.
 */
 function HowToOrder() {
   const { eyebrow, heading, steps } = howToOrderContent;
-  const { stepsRef, lineRef, activeStep } = useStepsProgress(steps.length);
+  const [activeStep, setActiveStep] = useState(null);
+
+  const lineFill = activeStep === null ? 0 : activeStep / (steps.length - 1);
 
   return (
     <section
@@ -31,30 +33,40 @@ function HowToOrder() {
             aria-hidden="true"
           >
             <div
-              ref={lineRef}
-              className="h-full origin-left scale-x-0 bg-honey transition-transform duration-200 ease-out"
+              className="h-full origin-left bg-honey transition-transform duration-500 ease-out"
+              style={{ transform: `scaleX(${lineFill})` }}
             />
           </div>
 
-          <ol ref={stepsRef} className="relative grid gap-4 md:grid-cols-3 md:gap-8">
+          <ol className="relative grid gap-4 md:grid-cols-3 md:gap-8">
             {steps.map((step, index) => {
-              const isReached = index <= activeStep;
-              const isCurrent = index === activeStep;
+              const isActive = index === activeStep;
 
               return (
                 <li
                   key={step.title}
-                  aria-current={isCurrent ? 'step' : undefined}
-                  className={`flex gap-5 rounded-3xl p-5 transition-all duration-500 md:flex-col md:items-center md:p-6 md:text-center ${
-                    isCurrent ? 'bg-warm-white/[0.06]' : ''
-                  } ${isReached ? 'opacity-100' : 'opacity-40'}`}
+                  tabIndex={0}
+                  aria-current={isActive ? 'step' : undefined}
+                  // Touch / tap highlights and keeps the step; a mouse highlights while hovering.
+                  onPointerDown={() => setActiveStep(index)}
+                  onPointerEnter={(event) => {
+                    if (event.pointerType === 'mouse') setActiveStep(index);
+                  }}
+                  onPointerLeave={(event) => {
+                    if (event.pointerType === 'mouse') setActiveStep(null);
+                  }}
+                  onFocus={() => setActiveStep(index)}
+                  onBlur={() => setActiveStep(null)}
+                  className={`flex cursor-pointer gap-5 rounded-3xl p-5 outline-none transition-all duration-500 select-none md:flex-col md:items-center md:p-6 md:text-center ${
+                    isActive ? 'bg-warm-white/[0.08]' : ''
+                  }`}
                 >
                   <span
                     className={`relative flex size-14 shrink-0 items-center justify-center rounded-full border transition-all duration-500 ${
-                      isReached
-                        ? 'border-honey bg-honey text-ink'
-                        : 'border-warm-white/20 bg-forest text-warm-white/70'
-                    } ${isCurrent ? 'scale-110 ring-8 ring-honey/15' : ''}`}
+                      isActive
+                        ? 'scale-110 border-honey bg-honey text-ink ring-8 ring-honey/15'
+                        : 'border-warm-white/25 bg-forest text-warm-white/80'
+                    }`}
                   >
                     <Icon name={step.icon} className="size-5" />
                   </span>
