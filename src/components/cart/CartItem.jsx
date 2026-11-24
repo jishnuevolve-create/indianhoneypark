@@ -29,7 +29,7 @@ function CartItem({ item, onProductLinkClick }) {
         <SafeImage
           {...getThumbnailImageProps(getProductImage(product, variant))}
           alt=""
-          className="size-full object-contain p-1.5"
+          className="size-full object-cover"
         />
       </Link>
 

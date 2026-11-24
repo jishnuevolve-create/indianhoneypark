@@ -64,13 +64,13 @@ function SearchDialog({ isOpen, onClose }) {
                     className="group flex items-center gap-4 rounded-2xl p-2 transition-colors hover:bg-cream"
                   >
                     <span
-                      className="flex size-16 shrink-0 items-center justify-center rounded-xl"
+                      className="flex size-16 shrink-0 items-center justify-center overflow-hidden rounded-xl"
                       style={{ backgroundColor: product.tint }}
                     >
                       <SafeImage
                         {...getThumbnailImageProps(product.images?.[0])}
                         alt=""
-                        className="size-14 object-contain"
+                        className="size-full object-cover"
                       />
                     </span>
                     <span className="min-w-0 flex-1">

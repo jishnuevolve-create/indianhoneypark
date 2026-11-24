@@ -1,16 +1,12 @@
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useRef, useState } from 'react';
-import {
-  getResponsiveImageProps,
-  getThumbnailImageProps,
-  isLifestylePhoto,
-} from '../../utils/productUtils';
+import { getResponsiveImageProps, getThumbnailImageProps } from '../../utils/productUtils';
 import SafeImage from '../common/SafeImage';
 
 /*
   Product gallery.
-  - Packshots (the jar on white) sit on a soft tinted stage with a floor shadow.
-  - Lifestyle photos (names containing "-lifestyle-") fill the whole frame.
+  - Every photo is a full square picture: the three studio shots of the bottles
+    (honeycomb backdrop, glossy floor) and the three lifestyle shots.
   - Arrows, swipe (phones) and the keyboard's left / right keys change the photo,
     and a counter shows where you are.
   - initialImage: the image to show first (e.g. the selected bottle's photo).
@@ -23,7 +19,6 @@ function ProductGallery({ images, productName, tint, initialImage, onImageSelect
   );
   const swipeStartX = useRef(null);
   const activeImage = safeImages[activeIndex] ?? safeImages[0];
-  const isLifestyle = isLifestylePhoto(activeImage);
   const hasMany = safeImages.length > 1;
 
   function showImage(index) {
@@ -53,12 +48,7 @@ function ProductGallery({ images, productName, tint, initialImage, onImageSelect
     <div className="space-y-3 sm:space-y-4">
       <div
         className="group relative aspect-square touch-pan-y overflow-hidden rounded-[1.75rem] select-none sm:rounded-[2rem]"
-        style={{
-          backgroundColor: tint,
-          backgroundImage: isLifestyle
-            ? undefined
-            : 'radial-gradient(circle at 50% 38%, rgba(255,255,255,0.85), rgba(255,255,255,0) 62%)',
-        }}
+        style={{ backgroundColor: tint }}
         tabIndex={0}
         role="group"
         aria-roledescription="carousel"
@@ -68,24 +58,14 @@ function ProductGallery({ images, productName, tint, initialImage, onImageSelect
         onPointerCancel={() => (swipeStartX.current = null)}
         onKeyDown={handleKeyDown}
       >
-        {!isLifestyle && (
-          <div
-            className="absolute bottom-[7%] left-1/2 h-[5%] w-[52%] -translate-x-1/2 rounded-[50%] bg-ink/20 blur-xl"
-            aria-hidden="true"
-          />
-        )}
-
+        {/* Every photo (studio shots and lifestyle shots) is a full square picture */}
         <SafeImage
           key={activeImage}
           {...getResponsiveImageProps(activeImage, '(min-width: 1024px) 45vw, 100vw')}
           alt={`${productName} - photo ${activeIndex + 1} of ${safeImages.length}`}
           loading="eager"
           draggable={false}
-          className={
-            isLifestyle
-              ? 'absolute inset-0 size-full animate-fade-in object-cover transition-transform duration-700 ease-out group-hover:scale-105'
-              : 'absolute inset-0 m-auto h-[88%] w-[88%] animate-fade-in object-contain mix-blend-multiply transition-transform duration-700 ease-out group-hover:scale-105'
-          }
+          className="absolute inset-0 size-full animate-fade-in object-cover transition-transform duration-700 ease-out group-hover:scale-105"
         />
 
         {hasMany && (
@@ -139,9 +119,7 @@ function ProductGallery({ images, productName, tint, initialImage, onImageSelect
               <SafeImage
                 {...getThumbnailImageProps(image)}
                 alt=""
-                className={`size-full ${
-                  isLifestylePhoto(image) ? 'object-cover' : 'object-contain p-1 mix-blend-multiply'
-                }`}
+                className="size-full object-cover"
               />
             </button>
           ))}
