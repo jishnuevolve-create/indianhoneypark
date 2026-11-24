@@ -74,16 +74,6 @@ function HowToOrder() {
                       : 'border-warm-white/10 bg-warm-white/[0.04]'
                   }`}
                 >
-                  {/* Big step number behind the text */}
-                  <span
-                    className={`pointer-events-none absolute -right-2 -bottom-6 font-display text-[9rem] leading-none font-semibold transition-colors duration-500 ${
-                      isActive ? 'text-honey/20' : 'text-warm-white/[0.05]'
-                    }`}
-                    aria-hidden="true"
-                  >
-                    {index + 1}
-                  </span>
-
                   <p className="relative text-xs font-semibold tracking-[0.25em] text-honey uppercase">
                     Step {index + 1}
                   </p>
