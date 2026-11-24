@@ -7,7 +7,7 @@ export const siteConfig = {
   brandName: 'Indian Honey',
   logoSubline: 'Since 1990', // small line under the name in the header (leave '' to hide)
   tagline: "Nature's Finest Honey, In Every Drop.",
-  siteUrl: 'https://www.example.com', // TODO: replace with your live domain
+  siteUrl: 'https://jishnuevolve-create.github.io/indianhoneypark', // update if you add a custom domain
 
   // WhatsApp number in international format: country code + number, digits only.
   // Example for India: '919876543210' (91 = India, then the 10-digit mobile number).
