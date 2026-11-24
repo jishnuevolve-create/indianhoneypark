@@ -15,46 +15,70 @@ const icons = {
 };
 
 // Icons whose blank label gets the Indian Honey logo placed on top.
-// left / top / size are percentages of the icon, centred on the label.
+// fit: how much of the icon box the picture fills (the jar fills its picture edge to edge,
+// so it is shrunk to look the same size as the other icons).
+// left / top / size: percentages of the picture, centred on the label.
 const logoOnLabel = {
-  packaging: { left: 50, top: 54, size: 28 },
+  packaging: { fit: 94, left: 50, top: 54, size: 28 },
 };
 
 function FeatureIcon({ name, className = '' }) {
   const src = icons[name];
   if (!src) return null;
 
-  const image = (
-    <img
-      src={withBase(src)}
-      alt=""
-      width="200"
-      height="200"
-      loading="lazy"
-      decoding="async"
-      className={logoOnLabel[name] ? 'size-full object-contain' : className}
-    />
-  );
-
   const logo = logoOnLabel[name];
-  if (!logo) return image;
-
-  return (
-    <span className={`relative inline-block ${className}`}>
-      {image}
+  if (!logo) {
+    return (
       <img
-        src={withBase('/images/logo/indian-honey-logo.png')}
+        src={withBase(src)}
         alt=""
+        width="200"
+        height="200"
         loading="lazy"
         decoding="async"
-        className="absolute -translate-x-1/2 -translate-y-1/2 object-contain"
-        style={{
-          left: `${logo.left}%`,
-          top: `${logo.top}%`,
-          width: `${logo.size}%`,
-          height: `${logo.size}%`,
-        }}
+        className={className}
       />
+    );
+  }
+
+  const inset = (100 - logo.fit) / 2;
+  return (
+    <span className={`relative block shrink-0 ${className}`}>
+      <span
+        className="absolute block"
+        style={{
+          left: `${inset}%`,
+          top: `${inset}%`,
+          width: `${logo.fit}%`,
+          height: `${logo.fit}%`,
+        }}
+      >
+        <img
+          src={withBase(src)}
+          alt=""
+          width="200"
+          height="200"
+          loading="lazy"
+          decoding="async"
+          className="block"
+          style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+        />
+        <img
+          src={withBase('/images/logo/indian-honey-logo.png')}
+          alt=""
+          loading="lazy"
+          decoding="async"
+          className="absolute"
+          style={{
+            left: `${logo.left}%`,
+            top: `${logo.top}%`,
+            width: `${logo.size}%`,
+            height: `${logo.size}%`,
+            transform: 'translate(-50%, -50%)',
+            objectFit: 'contain',
+          }}
+        />
+      </span>
     </span>
   );
 }
