@@ -132,22 +132,23 @@ export const brandStoryContent = {
   buttonLink: '/about',
 };
 
+// Icons here are pictures from components/home/FeatureIcon.jsx: 'orderChoose', 'orderCart' or 'whatsapp'.
 export const howToOrderContent = {
   eyebrow: 'How to Order',
   heading: 'Three simple steps to your honey.',
   steps: [
     {
-      icon: 'Search',
+      icon: 'orderChoose',
       title: 'Choose Your Honey',
       text: 'Browse our seven varieties and pick the bottle option that suits you.',
     },
     {
-      icon: 'ShoppingBag',
+      icon: 'orderCart',
       title: 'Add Products to Cart',
       text: 'Add as many honeys as you like and adjust quantities in your cart.',
     },
     {
-      icon: 'MessageCircle',
+      icon: 'whatsapp',
       title: 'Order Through WhatsApp',
       text: 'Send your order on WhatsApp. We confirm availability, delivery and payment with you.',
     },

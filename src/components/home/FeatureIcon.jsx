@@ -12,6 +12,9 @@ const icons = {
   flavours: '/images/features/flavours.png', // wooden honey dipper
   packaging: '/images/features/packaging.png', // honey jar
   whatsapp: '/images/features/whatsapp.png', // WhatsApp chat bubble
+  // "How to Order" section
+  orderChoose: '/images/features/order-choose.png', // honey jar with magnifier
+  orderCart: '/images/features/order-cart.png', // cart with a honey jar
   // "Why Choose Us" section
   agmark: '/images/features/agmark.png', // gold medal
   forest: '/images/features/forest.png', // forest tree
