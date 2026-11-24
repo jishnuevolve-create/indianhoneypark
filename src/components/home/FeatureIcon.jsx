@@ -12,6 +12,13 @@ const icons = {
   flavours: '/images/features/flavours.png', // wooden honey dipper
   packaging: '/images/features/packaging.png', // honey jar
   whatsapp: '/images/features/whatsapp.png', // WhatsApp chat bubble
+  // "Why Choose Us" section
+  agmark: '/images/features/agmark.png', // gold medal
+  forest: '/images/features/forest.png', // forest tree
+  vacuum: '/images/features/vacuum.png', // vacuum processing tank
+  lab: '/images/features/lab.png', // lab flask and test tube
+  hygiene: '/images/features/hygiene.png', // sealed jar with shield
+  team: '/images/features/team.png', // trained team
 };
 
 // Icons whose blank label gets the Indian Honey logo placed on top.

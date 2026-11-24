@@ -1,8 +1,8 @@
 import { whyChooseUsContent } from '../../data/homeContent';
 import Container from '../common/Container';
-import Icon from '../common/Icon';
 import Reveal from '../common/Reveal';
 import SectionHeading from '../common/SectionHeading';
+import FeatureIcon from './FeatureIcon';
 
 // "Why Choose Us": company credentials (from the introduction document) as a stats panel and reason cards.
 function WhyChooseUs() {
@@ -41,9 +41,10 @@ function WhyChooseUs() {
               delay={index * 70}
               className="group flex gap-4 rounded-[1.5rem] border border-honey/25 bg-surface p-5 transition duration-500 hover:-translate-y-1 hover:border-honey/50 hover:shadow-lift sm:p-6"
             >
-              <span className="flex size-12 shrink-0 items-center justify-center rounded-full bg-soft-yellow text-honey-brown transition-colors duration-500 group-hover:bg-honey group-hover:text-ink">
-                <Icon name={reason.icon} className="size-6" />
-              </span>
+              <FeatureIcon
+                name={reason.icon}
+                className="size-16 shrink-0 object-contain drop-shadow-[0_8px_10px_rgba(120,70,10,0.2)] transition-transform duration-500 group-hover:-translate-y-1 group-hover:scale-105 sm:size-20"
+              />
               <div>
                 <h3 className="text-lg sm:text-xl">{reason.title}</h3>
                 <p className="mt-2 text-sm leading-relaxed text-honey-brown/80 sm:text-base">

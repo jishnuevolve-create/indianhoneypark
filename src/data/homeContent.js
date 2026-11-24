@@ -71,7 +71,7 @@ export const bestQualityContent = {
   WHY CHOOSE US
   Based on the company introduction document (Indian Honey Park).
   - stats: the four big numbers in the dark panel
-  - reasons: the cards below it. icon = a name registered in components/common/Icon.jsx
+  - reasons: the cards below it. icon = a name from components/home/FeatureIcon.jsx
 */
 export const whyChooseUsContent = {
   eyebrow: 'Why Choose Us',
@@ -86,32 +86,32 @@ export const whyChooseUsContent = {
   ],
   reasons: [
     {
-      icon: 'Award',
+      icon: 'agmark',
       title: 'AGMARK Approved',
       text: 'Approved by the Government of India in 2004, reflecting our adherence to stringent national quality standards.',
     },
     {
-      icon: 'TreePine',
+      icon: 'forest',
       title: 'Pure Forest Honey',
       text: 'We procure pure, natural honey from the pristine forest regions of Nilambur, Kerala, known for its rich biodiversity.',
     },
     {
-      icon: 'Factory',
+      icon: 'vacuum',
       title: 'Vacuum Processing',
       text: 'Modern scientific methods and advanced vacuum equipment preserve the natural flavour, aroma, nutrition and purity.',
     },
     {
-      icon: 'FlaskConical',
+      icon: 'lab',
       title: 'Lab Tested, Every Batch',
       text: 'Each batch is tested in AGMARK-approved laboratories to verify purity and specifications before packing.',
     },
     {
-      icon: 'ShieldCheck',
+      icon: 'hygiene',
       title: 'Hygienic Packing',
       text: 'Professional filtration, moisture reduction and hygienic packing, all done under controlled conditions.',
     },
     {
-      icon: 'Users',
+      icon: 'team',
       title: 'Experienced Team',
       text: 'Trained, experienced personnel maintain strict quality control throughout processing and packing.',
     },
