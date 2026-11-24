@@ -54,6 +54,11 @@ export function getResponsiveImageProps(imagePath, sizes) {
   };
 }
 
+// Lifestyle photos (e.g. kashmir-honey-lifestyle-1.webp) are full scenes rather than a jar on white.
+export function isLifestylePhoto(imagePath) {
+  return /-lifestyle-\d/.test(imagePath || '');
+}
+
 // The smaller copy only, for thumbnails (cart, search, gallery thumbnails).
 export function getThumbnailImageProps(imagePath) {
   const { src, fallbackSrc } = getResponsiveImageProps(imagePath);

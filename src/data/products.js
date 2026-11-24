@@ -28,9 +28,17 @@ function getContainerPhoto(slug, containerId) {
   return `/images/products/${slug}-${containerId}.webp`;
 }
 
-// All three container photos for a product, used as its gallery.
+// Three lifestyle photos per product (the jar in a real setting), named <product-slug>-lifestyle-1.webp ... -3.webp
+function createLifestylePhotos(slug) {
+  return [1, 2, 3].map((number) => `/images/products/${slug}-lifestyle-${number}.webp`);
+}
+
+// The product gallery: the three container photos first, then the three lifestyle photos.
 function createContainerGallery(slug) {
-  return CONTAINERS.map((container) => getContainerPhoto(slug, container.id));
+  return [
+    ...CONTAINERS.map((container) => getContainerPhoto(slug, container.id)),
+    ...createLifestylePhotos(slug),
+  ];
 }
 
 // Builds the three bottle options, taking each one's size and price from `sizesAndPrices`.

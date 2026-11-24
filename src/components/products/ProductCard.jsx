@@ -32,7 +32,11 @@ function ProductCard({ product }) {
       <Link
         to={productUrl}
         className="relative flex aspect-square items-center justify-center overflow-hidden"
-        style={{ backgroundColor: product.tint }}
+        style={{
+          backgroundColor: product.tint,
+          backgroundImage:
+            'radial-gradient(circle at 50% 40%, rgba(255,255,255,0.85), rgba(255,255,255,0) 62%)',
+        }}
         tabIndex={-1}
         aria-hidden="true"
       >
@@ -42,7 +46,7 @@ function ProductCard({ product }) {
             '(min-width: 1280px) 25vw, (min-width: 1024px) 33vw, 50vw',
           )}
           alt=""
-          className="h-[86%] w-full object-contain transition-transform duration-700 ease-out group-hover:scale-105"
+          className="h-[86%] w-full object-contain mix-blend-multiply transition-transform duration-700 ease-out group-hover:scale-105"
         />
       </Link>
 

@@ -14,13 +14,20 @@ function CategoryCard({ product }) {
     >
       <div
         className="relative flex aspect-[4/4.2] items-end justify-center overflow-hidden"
-        style={{ backgroundColor: product.tint }}
+        style={{
+          backgroundColor: product.tint,
+          backgroundImage:
+            'radial-gradient(circle at 50% 40%, rgba(255,255,255,0.85), rgba(255,255,255,0) 62%)',
+        }}
       >
-        <div className="absolute inset-x-4 top-4 bottom-0 rounded-t-full bg-warm-white/45 sm:inset-x-8 sm:top-8" />
+        <div
+          className="absolute bottom-[5%] left-1/2 h-[5%] w-[55%] -translate-x-1/2 rounded-[50%] bg-ink/20 blur-lg"
+          aria-hidden="true"
+        />
         <SafeImage
           {...getResponsiveImageProps(product.images?.[0], '(min-width: 1024px) 25vw, 50vw')}
           alt={`${product.name} bottle`}
-          className="relative h-[88%] w-full object-contain object-bottom transition-transform duration-700 ease-out group-hover:scale-105"
+          className="relative h-[88%] w-full object-contain object-bottom mix-blend-multiply transition-transform duration-700 ease-out group-hover:scale-105"
         />
       </div>
       <div className="flex flex-1 flex-col p-3 sm:p-5">
