@@ -62,8 +62,7 @@ export function resumeSmoothScroll() {
   lenis?.start();
 }
 
-// duration (seconds, optional): take exactly this long instead of the default glide.
-export function scrollToPosition(top, { immediate = false, duration } = {}) {
+export function scrollToPosition(top, { immediate = false } = {}) {
   // Always a whole pixel: Lenis only finishes an animation when the rounded position
   // equals the target, so a target like 742.6 would never finish and would keep
   // overriding every other kind of scrolling (scrollbar, keyboard).
@@ -72,7 +71,7 @@ export function scrollToPosition(top, { immediate = false, duration } = {}) {
     // Re-measure the page first: after moving to a new page the height has changed,
     // and Lenis would otherwise stop at the old page's length.
     lenis.resize();
-    lenis.scrollTo(target, { immediate, force: true, ...(duration ? { duration } : {}) });
+    lenis.scrollTo(target, { immediate, force: true });
   } else {
     window.scrollTo({ top: target, behavior: immediate ? 'instant' : 'smooth' });
   }
