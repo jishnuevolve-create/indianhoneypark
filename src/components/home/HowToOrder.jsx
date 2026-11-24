@@ -6,14 +6,11 @@ import Container from '../common/Container';
 import Icon from '../common/Icon';
 import SectionHeading from '../common/SectionHeading';
 
-// How much scrolling (in % of the screen height) each step gets while the section is pinned.
-const SCROLL_PER_STEP_VH = 60;
-
 /*
-  Three ordering steps. On most screens the section pins to the screen and each bit of
-  scrolling moves to the next step (the gold line fills as it goes). After the last step
-  it lets go and the page continues to the next section. On short screens, or for people
-  who prefer less motion, it is a normal section whose steps light up as they scroll by.
+  Three ordering steps. On most screens the page stops on this section (one full screen) and
+  holds it there: each scroll moves to the next step, and one more scroll after the last step
+  releases the page to the next section (see useStepsProgress). On short screens, or for
+  people who prefer less motion, it is a normal section whose steps light up as they scroll by.
 */
 function HowToOrder() {
   const { eyebrow, heading, steps } = howToOrderContent;
@@ -28,14 +25,11 @@ function HowToOrder() {
       id="how-to-order"
       aria-labelledby="how-heading"
       className="bg-forest text-warm-white"
-      style={
-        isPinned ? { height: `${100 + (steps.length - 1) * SCROLL_PER_STEP_VH}vh` } : undefined
-      }
     >
       <div
         className={
           isPinned
-            ? 'sticky top-0 flex h-svh flex-col justify-center pt-[var(--header-h)] pb-8'
+            ? 'flex h-svh flex-col justify-center pt-[var(--header-h)] pb-8'
             : 'py-20 lg:py-28'
         }
       >
@@ -124,11 +118,9 @@ function HowToOrder() {
         {isPinned && (
           <p
             aria-hidden="true"
-            className={`mt-6 text-center text-xs tracking-[0.25em] text-warm-white/50 uppercase transition-opacity duration-500 ${
-              activeStep < steps.length - 1 ? 'opacity-100' : 'opacity-0'
-            }`}
+            className="mt-6 text-center text-xs tracking-[0.25em] text-warm-white/50 uppercase"
           >
-            Keep scrolling
+            {activeStep < steps.length - 1 ? 'Scroll for the next step' : 'Scroll to continue'}
           </p>
         )}
       </div>

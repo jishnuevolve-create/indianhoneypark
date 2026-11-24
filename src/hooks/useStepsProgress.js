@@ -1,10 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
-import { scrollToPosition } from '../utils/smoothScroll';
+import { pauseSmoothScroll, resumeSmoothScroll, scrollToPosition } from '../utils/smoothScroll';
 
-// Pinning needs a reasonably tall screen and is skipped for people who prefer less motion.
+// Holding the page needs a reasonably tall screen and is skipped for people who prefer less motion.
 const PINNED_QUERY = '(min-height: 640px) and (prefers-reduced-motion: no-preference)';
 
-// True when the "How to Order" section should pin to the screen while steps change.
+// True when the "How to Order" section should hold the page while its steps change.
 export function usePinnedSteps() {
   const [isPinned, setIsPinned] = useState(() => window.matchMedia(PINNED_QUERY).matches);
 
@@ -20,18 +20,25 @@ export function usePinnedSteps() {
   return isPinned;
 }
 
+const STEP_COOLDOWN = 700; // ms after a step change (or after arriving) in which extra input is ignored
+const GLIDE_SECONDS = 0.9; // how long the page takes to move on to the next / previous section
+
 /*
-  Lights up steps one by one while the visitor scrolls.
+  Lights up the steps of "How to Order".
 
-  - pinned = true: the section stays fixed on screen (sticky) inside its tall wrapper
-    (attach `sectionRef` to the wrapper). While it is fixed, every scroll gesture (mouse wheel,
-    trackpad swipe, touch swipe, arrow / page keys) moves exactly ONE step. Scrolling down
-    past the last step (or up past the first) lets go, and the page continues normally.
-  - pinned = false: nothing is fixed; steps light up as the list moves up through the screen.
-    Attach `stepsRef` to the list.
+  pinned = true  (the section is exactly one screen tall; attach `sectionRef` to it)
+    1. Scrolling down, the page STOPS the moment the section fills the screen. It is held there:
+       the page cannot scroll while the steps are going.
+    2. Every scroll gesture (mouse wheel notch, trackpad swipe, touch swipe, arrow / page / space
+       key) moves exactly one step.
+    3. One more gesture after the last step releases the page, which glides on to the next section.
+       Scrolling up works the same way in reverse (arriving from below starts at the last step).
 
-  - lineRef: attach to the progress line's fill; it is scaled 0 → 1 directly (no React re-render).
-  - activeStep: which step is highlighted. React only re-renders when it changes.
+  pinned = false (short screens / reduced motion): nothing is held; steps light up as the list
+    moves up through the screen. Attach `stepsRef` to the list.
+
+  lineRef: the progress line's fill (scaled 0 → 1 directly, no React re-render).
+  activeStep: which step is highlighted.
 */
 export function useStepsProgress(
   stepCount,
@@ -42,36 +49,21 @@ export function useStepsProgress(
   const lineRef = useRef(null);
   const [activeStep, setActiveStep] = useState(0);
 
-  // Which step is highlighted, from the scroll position.
+  // Not held: steps light up as the list scrolls up through the screen.
   useEffect(() => {
+    if (pinned) return undefined;
     let frameId = null;
     function update() {
       frameId = null;
+      const list = stepsRef.current;
+      if (!list) return;
       const viewportHeight = window.innerHeight;
-      let progress;
-
-      if (pinned) {
-        const section = sectionRef.current;
-        if (!section) return;
-        const rect = section.getBoundingClientRect();
-        const scrollable = Math.max(1, rect.height - viewportHeight);
-        progress = Math.min(1, Math.max(0, -rect.top / scrollable));
-      } else {
-        const list = stepsRef.current;
-        if (!list) return;
-        const raw =
-          (viewportHeight * startAt - list.getBoundingClientRect().top) /
-          (viewportHeight * distance);
-        progress = Math.min(1, Math.max(0, raw));
-      }
-
-      // Pinned: step i sits at i/(n-1) of the pinned scroll. Unpinned: the steps share 0..1 evenly.
-      const step = pinned
-        ? Math.round(progress * (stepCount - 1))
-        : Math.min(stepCount - 1, Math.floor(progress * stepCount));
-      setActiveStep(step);
+      const raw =
+        (viewportHeight * startAt - list.getBoundingClientRect().top) / (viewportHeight * distance);
+      const progress = Math.min(1, Math.max(0, raw));
+      setActiveStep(Math.min(stepCount - 1, Math.floor(progress * stepCount)));
       if (lineRef.current && stepCount > 1) {
-        const lineFill = pinned ? progress : Math.min(1, (progress * stepCount) / (stepCount - 1));
+        const lineFill = Math.min(1, (progress * stepCount) / (stepCount - 1));
         lineRef.current.style.transform = `scaleX(${lineFill})`;
       }
     }
@@ -89,88 +81,96 @@ export function useStepsProgress(
     };
   }, [stepCount, pinned, startAt, distance]);
 
-  // One scroll gesture = one step, while the section is pinned.
+  // Held: the progress line follows the current step.
+  useEffect(() => {
+    if (pinned && lineRef.current && stepCount > 1) {
+      lineRef.current.style.transform = `scaleX(${activeStep / (stepCount - 1)})`;
+    }
+  }, [pinned, activeStep, stepCount]);
+
+  // Held: stop the page on the section and move one step per gesture.
   useEffect(() => {
     if (!pinned || stepCount < 2) return undefined;
 
-    const STEP_DURATION = 0.8; // seconds the page takes to glide to the next step
-    const STEP_COOLDOWN = 1000; // ms during which extra wheel / swipe input is ignored
-    let lastStepTime = 0;
+    let locked = false;
+    let step = 0;
+    let busyUntil = 0;
+    let lastY = window.scrollY;
     let lastWheelTime = 0;
-    let targetStep = 0;
-    let engaged = false;
+    // After letting go, don't catch the page again until it has moved clear of the section.
+    let disarmed = false;
     let touchStartY = null;
     let touchDone = false;
 
-    function getRange() {
-      const section = sectionRef.current;
-      if (!section) return null;
-      const rect = section.getBoundingClientRect();
-      const start = window.scrollY + rect.top;
-      return { start, end: start + Math.max(1, rect.height - window.innerHeight) };
-    }
-    const positionOf = (range, step) =>
-      range.start + ((range.end - range.start) * step) / (stepCount - 1);
+    const sectionTop = () => window.scrollY + sectionRef.current.getBoundingClientRect().top;
 
-    function moveTo(range, step) {
-      targetStep = step;
-      lastStepTime = performance.now();
-      scrollToPosition(positionOf(range, step), { duration: STEP_DURATION });
+    function showStep(index) {
+      step = index;
+      setActiveStep(index);
     }
 
-    // Returns true when the gesture was used by the pinned section (so the page must not scroll).
-    function handleGesture(direction, isNewGesture) {
-      const range = getRange();
-      if (!range) return false;
+    // Stop the page exactly on the section and take over scrolling.
+    function lock(startStep) {
+      locked = true;
+      showStep(startStep);
+      busyUntil = performance.now() + STEP_COOLDOWN;
+      scrollToPosition(sectionTop(), { immediate: true });
+      pauseSmoothScroll();
+    }
+
+    // Give scrolling back and glide on to the next (direction 1) or previous (-1) section.
+    function release(direction) {
+      locked = false;
+      disarmed = true;
+      resumeSmoothScroll();
+      busyUntil = performance.now() + STEP_COOLDOWN;
+      const top = sectionTop();
+      const target =
+        direction > 0 ? top + sectionRef.current.offsetHeight : top - window.innerHeight * 0.6;
+      scrollToPosition(target, { duration: GLIDE_SECONDS });
+    }
+
+    function handleGesture(direction) {
+      if (performance.now() < busyUntil) return;
+      const next = step + direction;
+      if (next < 0 || next > stepCount - 1) {
+        release(direction);
+        return;
+      }
+      showStep(next);
+      busyUntil = performance.now() + STEP_COOLDOWN;
+    }
+
+    // Catch the moment the page scrolls onto the section, and keep it there while locked.
+    function handleScroll() {
       const y = window.scrollY;
-      const now = performance.now();
-      const inside = y >= range.start - 2 && y <= range.end + 2;
-      if (!inside) {
-        engaged = false;
-        return false;
+      const top = sectionTop();
+      if (locked) {
+        if (Math.abs(y - top) > 1) window.scrollTo({ top, behavior: 'instant' });
+        lastY = top;
+        return;
       }
-
-      const animating = now - lastStepTime < STEP_COOLDOWN;
-      const progress = (y - range.start) / (range.end - range.start);
-      const currentStep = animating
-        ? targetStep
-        : Math.min(stepCount - 1, Math.max(0, Math.round(progress * (stepCount - 1))));
-
-      // Just arrived (e.g. with scrolling momentum): settle on the first / last step first.
-      if (!engaged) {
-        engaged = true;
-        const overshoot = window.innerHeight * 0.35;
-        if (direction > 0 && y - range.start > 2 && y - range.start < overshoot) {
-          moveTo(range, 0);
-          return true;
-        }
-        if (direction < 0 && range.end - y > 2 && range.end - y < overshoot) {
-          moveTo(range, stepCount - 1);
-          return true;
-        }
+      if (disarmed) {
+        if (Math.abs(y - top) > 80) disarmed = false;
+        lastY = y;
+        return;
       }
-
-      // At the first step going up, or the last step going down: let the page continue.
-      if (direction < 0 && currentStep <= 0 && y <= range.start + 2) return false;
-      if (direction > 0 && currentStep >= stepCount - 1 && y >= range.end - 2) return false;
-
-      if (!animating && isNewGesture) {
-        moveTo(range, Math.min(stepCount - 1, Math.max(0, currentStep + direction)));
-      }
-      return true;
+      // Ignore big jumps (scrollbar drag, links, Home / End): only normal scrolling is caught.
+      const smallMove = Math.abs(y - lastY) < window.innerHeight * 1.2;
+      if (smallMove && lastY < top - 0.5 && y >= top - 0.5) lock(0);
+      else if (smallMove && lastY > top + 0.5 && y <= top + 0.5) lock(stepCount - 1);
+      lastY = y;
     }
 
     function handleWheel(event) {
-      if (event.ctrlKey || !event.deltaY) return;
+      if (!locked || event.ctrlKey || !event.deltaY) return;
+      event.preventDefault();
+      event.stopImmediatePropagation();
       const now = performance.now();
       const gap = now - lastWheelTime;
       lastWheelTime = now;
       // A new swipe starts after a short pause (this ignores a trackpad's trailing momentum).
-      const isNewGesture = gap > 70 || now - lastStepTime > 1500;
-      if (handleGesture(Math.sign(event.deltaY), isNewGesture)) {
-        event.preventDefault();
-        event.stopImmediatePropagation();
-      }
+      if (gap > 70) handleGesture(Math.sign(event.deltaY));
     }
 
     function handleTouchStart(event) {
@@ -178,47 +178,41 @@ export function useStepsProgress(
       touchDone = false;
     }
     function handleTouchMove(event) {
-      if (touchStartY === null) return;
-      const distanceMoved = touchStartY - event.touches[0].clientY;
-      const direction = Math.sign(distanceMoved);
-      if (!direction) return;
-      const swiped = !touchDone && Math.abs(distanceMoved) > 40;
-      if (handleGesture(direction, swiped)) {
-        if (swiped) touchDone = true;
-        if (event.cancelable) event.preventDefault();
+      if (!locked || touchStartY === null) return;
+      if (event.cancelable) event.preventDefault();
+      const moved = touchStartY - event.touches[0].clientY;
+      if (!touchDone && Math.abs(moved) > 40) {
+        touchDone = true;
+        handleGesture(Math.sign(moved));
       }
     }
 
     function handleKeyDown(event) {
-      const target = event.target;
-      if (
-        event.altKey ||
-        event.ctrlKey ||
-        event.metaKey ||
-        target.closest?.('input, textarea, select, button, a, [contenteditable]')
-      ) {
-        return;
-      }
+      if (!locked || event.altKey || event.ctrlKey || event.metaKey) return;
       let direction = 0;
       if (event.key === 'ArrowDown' || event.key === 'PageDown') direction = 1;
       else if (event.key === 'ArrowUp' || event.key === 'PageUp') direction = -1;
       else if (event.key === ' ') direction = event.shiftKey ? -1 : 1;
+      else if (event.key === 'End' || event.key === 'Home')
+        direction = event.key === 'End' ? 1 : -1;
       if (!direction) return;
-      if (handleGesture(direction, !event.repeat)) {
-        event.preventDefault();
-        event.stopImmediatePropagation();
-      }
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      if (!event.repeat) handleGesture(direction);
     }
 
+    window.addEventListener('scroll', handleScroll, { passive: true });
     window.addEventListener('wheel', handleWheel, { passive: false, capture: true });
     window.addEventListener('touchstart', handleTouchStart, { passive: true });
     window.addEventListener('touchmove', handleTouchMove, { passive: false });
     window.addEventListener('keydown', handleKeyDown, { capture: true });
     return () => {
+      window.removeEventListener('scroll', handleScroll);
       window.removeEventListener('wheel', handleWheel, { capture: true });
       window.removeEventListener('touchstart', handleTouchStart);
       window.removeEventListener('touchmove', handleTouchMove);
       window.removeEventListener('keydown', handleKeyDown, { capture: true });
+      if (locked) resumeSmoothScroll();
     };
   }, [pinned, stepCount]);
 
