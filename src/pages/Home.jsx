@@ -1,3 +1,4 @@
+import BestQuality from '../components/home/BestQuality';
 import BrandStory from '../components/home/BrandStory';
 import FAQ from '../components/home/FAQ';
 import FeaturedProducts from '../components/home/FeaturedProducts';
@@ -15,6 +16,7 @@ function Home() {
     <>
       <Hero />
       <WhyChooseUs />
+      <BestQuality />
       <FeaturedProducts />
       <BrandStory />
       <HowToOrder />

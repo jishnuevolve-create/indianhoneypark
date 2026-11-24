@@ -1,37 +1,55 @@
 import { whyChooseUsContent } from '../../data/homeContent';
 import Container from '../common/Container';
+import Icon from '../common/Icon';
 import Reveal from '../common/Reveal';
 import SectionHeading from '../common/SectionHeading';
-import FeatureIcon from './FeatureIcon';
 
-// "Best feature / We Provide The Best Quality": four feature cards with icons.
+// "Why Choose Us": company credentials (from the introduction document) as a stats panel and reason cards.
 function WhyChooseUs() {
-  const { eyebrow, heading, items } = whyChooseUsContent;
+  const { eyebrow, heading, intro, stats, reasons } = whyChooseUsContent;
 
   return (
     <section id="why-choose-us" aria-labelledby="why-heading" className="py-20 lg:py-28">
       <Container>
         <Reveal>
           <SectionHeading id="why-heading" eyebrow={eyebrow} title={heading} />
+          <p className="mx-auto mt-5 max-w-2xl text-center leading-relaxed text-honey-brown/80">
+            {intro}
+          </p>
         </Reveal>
 
-        <ul className="mt-12 grid grid-cols-2 gap-3 sm:gap-5 lg:mt-16 lg:grid-cols-4">
-          {items.map((item, index) => (
+        {/* Key numbers */}
+        <Reveal delay={80}>
+          <dl className="mt-12 grid grid-cols-2 gap-px overflow-hidden rounded-[1.5rem] bg-warm-white/10 text-warm-white lg:mt-16 lg:grid-cols-4 lg:rounded-[2rem]">
+            {stats.map((stat) => (
+              <div key={stat.label} className="bg-forest px-4 py-7 text-center sm:py-10">
+                <dd className="font-display text-2xl text-honey sm:text-4xl">{stat.value}</dd>
+                <dt className="mt-2 text-xs tracking-[0.15em] text-warm-white/70 uppercase sm:text-sm">
+                  {stat.label}
+                </dt>
+              </div>
+            ))}
+          </dl>
+        </Reveal>
+
+        {/* Reasons */}
+        <ul className="mt-6 grid gap-4 sm:grid-cols-2 sm:gap-5 lg:mt-8 lg:grid-cols-3">
+          {reasons.map((reason, index) => (
             <Reveal
               as="li"
-              key={item.title}
-              delay={index * 90}
-              className="group flex flex-col items-center rounded-[1.5rem] border border-honey/25 bg-surface px-4 py-8 text-center transition duration-500 hover:-translate-y-1 hover:border-honey/50 hover:shadow-lift sm:rounded-[2rem] sm:px-7 sm:py-10"
+              key={reason.title}
+              delay={index * 70}
+              className="group flex gap-4 rounded-[1.5rem] border border-honey/25 bg-surface p-5 transition duration-500 hover:-translate-y-1 hover:border-honey/50 hover:shadow-lift sm:p-6"
             >
-              {/* Realistic 3D icon that lifts slightly on hover */}
-              <FeatureIcon
-                name={item.icon}
-                className="size-20 object-contain drop-shadow-[0_10px_12px_rgba(120,70,10,0.22)] transition-transform duration-500 group-hover:-translate-y-1.5 group-hover:scale-105 sm:size-28"
-              />
-              <h3 className="mt-5 text-base sm:mt-7 sm:text-xl">{item.title}</h3>
-              <p className="mt-2 text-xs leading-relaxed text-honey-brown/80 sm:mt-3 sm:text-base">
-                {item.text}
-              </p>
+              <span className="flex size-12 shrink-0 items-center justify-center rounded-full bg-soft-yellow text-honey-brown transition-colors duration-500 group-hover:bg-honey group-hover:text-ink">
+                <Icon name={reason.icon} className="size-6" />
+              </span>
+              <div>
+                <h3 className="text-lg sm:text-xl">{reason.title}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-honey-brown/80 sm:text-base">
+                  {reason.text}
+                </p>
+              </div>
             </Reveal>
           ))}
         </ul>

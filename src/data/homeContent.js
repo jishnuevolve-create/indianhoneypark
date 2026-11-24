@@ -40,7 +40,7 @@ export const heroContent = {
 
 // Icons here are custom drawings: 'varieties', 'flavours', 'packaging' or 'whatsapp'
 // (see src/components/home/FeatureIcon.jsx).
-export const whyChooseUsContent = {
+export const bestQualityContent = {
   eyebrow: 'Best feature',
   heading: 'We Provide The Best Quality',
   items: [
@@ -63,6 +63,57 @@ export const whyChooseUsContent = {
       icon: 'whatsapp',
       title: 'Easy WhatsApp Ordering',
       text: 'Build your cart and send your order in one tap. Our team confirms everything with you personally.',
+    },
+  ],
+};
+
+/*
+  WHY CHOOSE US
+  Based on the company introduction document (Indian Honey Park).
+  - stats: the four big numbers in the dark panel
+  - reasons: the cards below it. icon = a name registered in components/common/Icon.jsx
+*/
+export const whyChooseUsContent = {
+  eyebrow: 'Why Choose Us',
+  heading: 'Trusted honey processing since 1990.',
+  intro:
+    'Indian Honey Park is an AGMARK-approved honey processing and packing premises in Thrissur, Kerala. From forest to jar, every step is built around purity and food safety.',
+  stats: [
+    { value: '30+', label: 'Years of experience' },
+    { value: '2004', label: 'AGMARK approved' },
+    { value: 'Nilambur', label: 'Forest-sourced honey' },
+    { value: 'Every batch', label: 'Lab tested' },
+  ],
+  reasons: [
+    {
+      icon: 'Award',
+      title: 'AGMARK Approved',
+      text: 'Approved by the Government of India in 2004, reflecting our adherence to stringent national quality standards.',
+    },
+    {
+      icon: 'TreePine',
+      title: 'Pure Forest Honey',
+      text: 'We procure pure, natural honey from the pristine forest regions of Nilambur, Kerala, known for its rich biodiversity.',
+    },
+    {
+      icon: 'Factory',
+      title: 'Vacuum Processing',
+      text: 'Modern scientific methods and advanced vacuum equipment preserve the natural flavour, aroma, nutrition and purity.',
+    },
+    {
+      icon: 'FlaskConical',
+      title: 'Lab Tested, Every Batch',
+      text: 'Each batch is tested in AGMARK-approved laboratories to verify purity and specifications before packing.',
+    },
+    {
+      icon: 'ShieldCheck',
+      title: 'Hygienic Packing',
+      text: 'Professional filtration, moisture reduction and hygienic packing, all done under controlled conditions.',
+    },
+    {
+      icon: 'Users',
+      title: 'Experienced Team',
+      text: 'Trained, experienced personnel maintain strict quality control throughout processing and packing.',
     },
   ],
 };
