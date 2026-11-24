@@ -7,7 +7,7 @@ import Icon from '../common/Icon';
 import SectionHeading from '../common/SectionHeading';
 
 // How much scrolling (in % of the screen height) each step gets while the section is pinned.
-const SCROLL_PER_STEP_VH = 70;
+const SCROLL_PER_STEP_VH = 60;
 
 /*
   Three ordering steps. On most screens the section pins to the screen and each bit of
@@ -28,7 +28,9 @@ function HowToOrder() {
       id="how-to-order"
       aria-labelledby="how-heading"
       className="bg-forest text-warm-white"
-      style={isPinned ? { height: `${100 + steps.length * SCROLL_PER_STEP_VH}vh` } : undefined}
+      style={
+        isPinned ? { height: `${100 + (steps.length - 1) * SCROLL_PER_STEP_VH}vh` } : undefined
+      }
     >
       <div
         className={
