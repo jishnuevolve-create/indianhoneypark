@@ -14,10 +14,17 @@ const icons = {
   whatsapp: '/images/features/whatsapp.png', // WhatsApp chat bubble
 };
 
+// Icons whose blank label gets the Indian Honey logo placed on top.
+// left / top / size are percentages of the icon, centred on the label.
+const logoOnLabel = {
+  packaging: { left: 50, top: 54, size: 28 },
+};
+
 function FeatureIcon({ name, className = '' }) {
   const src = icons[name];
   if (!src) return null;
-  return (
+
+  const image = (
     <img
       src={withBase(src)}
       alt=""
@@ -25,8 +32,30 @@ function FeatureIcon({ name, className = '' }) {
       height="200"
       loading="lazy"
       decoding="async"
-      className={className}
+      className={logoOnLabel[name] ? 'size-full object-contain' : className}
     />
+  );
+
+  const logo = logoOnLabel[name];
+  if (!logo) return image;
+
+  return (
+    <span className={`relative inline-block ${className}`}>
+      {image}
+      <img
+        src={withBase('/images/logo/indian-honey-logo.png')}
+        alt=""
+        loading="lazy"
+        decoding="async"
+        className="absolute -translate-x-1/2 -translate-y-1/2 object-contain"
+        style={{
+          left: `${logo.left}%`,
+          top: `${logo.top}%`,
+          width: `${logo.size}%`,
+          height: `${logo.size}%`,
+        }}
+      />
+    </span>
   );
 }
 
